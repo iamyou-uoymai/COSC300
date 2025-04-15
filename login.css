@@ -1,0 +1,47 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 75vh;
+}
+
+.nav-link {
+    color: #fff !important;
+  }
+  
+.form-container {
+  max-width: 400px;
+}
+
+.form-container form input{
+    background-color: black;
+    color: white !important;
+}
+
+.form-container form input:focus{
+    background-color: black;
+    border-color: white;
+    box-shadow: none;
+}
+
+.form-label {
+  margin: 0.5rem 0;
+}
+
+.login-in-btn {
+  font-weight: bold;
+  padding: 1rem 2rem; 
+}
+
+.logo-image {
+  width: 60px; 
+  height: 60px; 
+  margin-left: auto;
+}

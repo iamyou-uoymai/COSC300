@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSC300</title>
+  <link rel="stylesheet" href="./create.css">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background-color: black;
+            color: white !important;
+            min-height: 100vh;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="registration">
+    <div class="form-container">
+        <h1 class="fs-2">Create new Account</h1>
+
+        <p class="text-center">Already Registered? <a href="./login.html" class="text-light">Log in here.</a></p>
+
+        <form autocomplete="off">
+        <label for="name" class="form-label">NAME</label>
+        <input type="text" class="form-control" id="register-name" placeholder="Charmaine" required>
+
+        <label for="email" class="form-label">EMAIL</label>
+        <input type="email" class="form-control" id="register-email" placeholder="comet@gmail.com" required>
+
+        <label for="password" class="form-label">PASSWORD</label>
+        <input type="password" class="form-control" id="register-password" placeholder="******" required>
+
+        <label for="phoneNumber" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="phone-number" placeholder="0768318775" required>
+
+        <button id="submit-registration" type="submit" class="btn btn-light sign-up-btn mt-3">Sign up</button>
+        </form>
+    </div>
+    </div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+      <script src="./create.js" type="module" defer></script>
+</body>
+</html>

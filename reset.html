@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSC300</title>
+  <link rel="stylesheet" href="./reset.css">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background-color: black;
+            color: white;
+            min-height: 100vh;
+        }
+    </style>
+
+</head>
+<body>
+  <div class="reset">
+    <div class="form-container">
+        <h1 class="fs-2 text-center">Forgot Password</h1>
+
+        <p class="text-center">New Password</p>
+
+        <form>
+        <label for="email" class="form-label">EMAIL</label>
+        <input type="email" class="form-control" id="reset-email" placeholder="comet@gmail.com">
+
+        <button id="submit-reset" type="submit" class="btn btn-light reset-password-btn mt-3">Send</button>
+        </form>
+    </div>
+  </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+      <script src="./reset.js" type="module" defer></script>
+</body>
+</html>
