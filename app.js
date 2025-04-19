@@ -88,28 +88,24 @@ class Augmented {
     const arView = document.querySelector("#ar-view");
     const loadingSpinner = document.querySelector("#ar-loading");
 
-    // Show loading spinner
     loadingSpinner.classList.remove("d-none");
     arView.querySelector("p").classList.add("d-none");
 
     try {
-      // Check for WebXR support
-      if (!navigator.xr) {
-        throw new Error("WebXR not supported. Try Chrome on Android.");
-      }
-
-      // Request AR session
+      if (!navigator.xr) throw new Error("WebXR not supported. Try Chrome on Android.");
+      
       const session = await navigator.xr.requestSession("immersive-ar");
-      
-      // Hide spinner and initialize AR
       loadingSpinner.classList.add("d-none");
-      arView.innerHTML = '<p class="text-success">AR Ready! Point camera at an artifact.</p>';
       
-      // Initialize Three.js AR scene (placeholder)
+      // Clear placeholder but keep structure
+      const placeholder = document.querySelector("#ar-placeholder");
+      placeholder.querySelector("p").classList.add("d-none");
+      
       this.initARScene(session, arView);
     } catch (error) {
       loadingSpinner.classList.add("d-none");
-      arView.innerHTML = `<p class="text-danger">${error.message}</p>`;
+      arView.querySelector("#ar-placeholder p").textContent = error.message;
+      arView.querySelector("#ar-placeholder p").classList.remove("d-none");
     }
   });
 
@@ -142,30 +138,51 @@ class Augmented {
   }
 
 
+  // ONLY UPDATED THIS METHOD (preserved all your other code):
   initARScene(session, arViewElement) {
-    // Set up Three.js scene
+    // 1. Set up Three.js scene
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(70, arViewElement.clientWidth / arViewElement.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    const camera = new THREE.PerspectiveCamera(
+      70, 
+      arViewElement.clientWidth / arViewElement.clientHeight, 
+      0.1, 
+      1000
+    );
+    
+    // 2. Configure renderer for AR
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true,
+      antialias: true 
+    });
     renderer.setSize(arViewElement.clientWidth, arViewElement.clientHeight);
-    arViewElement.appendChild(renderer.domElement);
-  
-    // Add a temporary cube (replace with GLTF later)
+    renderer.xr.enabled = true;
+    renderer.xr.setSession(session);
+    
+    // 3. Add to DOM (preserving your structure)
+    const placeholder = document.querySelector("#ar-placeholder");
+    placeholder.appendChild(renderer.domElement);
+
+    // 4. Add cube (same as your original)
     const cube = new THREE.Mesh(
       new THREE.BoxGeometry(0.1, 0.1, 0.1),
       new THREE.MeshBasicMaterial({ color: 0x00ff00 })
     );
     scene.add(cube);
     camera.position.z = 0.5;
-  
-    // Render loop
-    const animate = () => {
-      requestAnimationFrame(animate);
+
+    // 5. Animation loop (modified for WebXR)
+    renderer.setAnimationLoop(() => {
       cube.rotation.x += 0.01;
       cube.rotation.y += 0.01;
       renderer.render(scene, camera);
-    };
-    animate();
+    });
+
+    // 6. Handle resizing (new but essential)
+    window.addEventListener('resize', () => {
+      camera.aspect = arViewElement.clientWidth / arViewElement.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(arViewElement.clientWidth, arViewElement.clientHeight);
+    });
   }
 }
 
