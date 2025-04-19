@@ -69,7 +69,7 @@ class CheckAuth{
       }
 }
 
-// let checkAuth = new CheckAuth();
+let checkAuth = new CheckAuth();
 
 class Augmented {
   constructor() {
@@ -117,7 +117,6 @@ class Augmented {
     });
 
     // (Your existing safe event listeners here...)
-    // (Keep all your other existing event listeners exactly the same)
     this.$settingsBtn.addEventListener("click", (event) => {
       const panel = document.querySelector("#settings-panel");
       panel.classList.toggle("d-none");
