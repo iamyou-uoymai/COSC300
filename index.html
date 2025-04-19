@@ -89,13 +89,21 @@
           <div class="card">
               <div class="card-body text-center">
                   <h5 class="card-title">AR View</h5>
-                  <div id="ar-view" style="height: 400px;">
-                    <a-scene embedded arjs="trackingMethod: best;">
-                      <a-marker preset="hiro">
-                        <a-box position="0 0.5 0" material="color: red"></a-box>
-                      </a-marker>
-                      <a-entity camera></a-entity>
-                    </a-scene>
+                  <div id="ar-view" style="height: 400px; background: #f0f0f0; position: relative;">
+                      <!-- Placeholder (visible by default) -->
+                      <div id="ar-placeholder" class="h-100 d-flex align-items-center justify-content-center">
+                          <p class="text-muted">Camera feed will appear here</p>
+                          <div id="ar-loading" class="d-none">
+                            <div class="spinner-border text-primary"></div>
+                            <p class="mt-2">Initializing AR...</p>
+                          </div>
+                      </div>
+                      <a-scene embedded arjs="trackingMethod: best;">
+                        <a-marker preset="hiro">
+                          <a-box position="0 0.5 0" material="color: red"></a-box>
+                        </a-marker>
+                        <a-entity camera></a-entity>
+                      </a-scene>
                   </div>
                   <button id="start-ar" class="btn btn-primary mt-3">Start AR Experience</button>
               </div>
@@ -121,6 +129,14 @@
         <p>&copy; 2025 Museum AR Experience. All rights reserved.</p>
     </div>
   </footer> -->
+
+  <!-- Add these right before your app.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/webxr-polyfill@latest/build/webxr-polyfill.js"></script>
+   
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
