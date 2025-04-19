@@ -69,7 +69,7 @@ class CheckAuth{
       }
 }
 
-// let checkAuth = new CheckAuth();
+let checkAuth = new CheckAuth();
 
 class Augmented {
   constructor(){    
