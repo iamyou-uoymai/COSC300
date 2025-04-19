@@ -63,7 +63,7 @@ class Register {
                 });
 
                 alert("Your account has been created successfully!");
-                window.location.href = "app.html"; // Redirect to the app page
+                window.location.href = "index.html"; // Redirect to the app page
             } catch (error) {
                 console.error("Error during registration:", error);
                 alert(error.message || "An error occurred during registration.");

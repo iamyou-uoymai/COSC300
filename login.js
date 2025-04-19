@@ -47,7 +47,7 @@ class Login{
                 const user = userCredential.user;
                 // ...
                 alert("Your Account is Still being Confirmed,Do not refresh this page, Please be Patient ♥");
-                window.location.href = "app.html";
+                window.location.href = "index.html";
             })
             .catch((error) => {
                 const errorCode = error.code;

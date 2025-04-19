@@ -43,7 +43,7 @@ class Reset{
                 // Password reset email sent!
                 // ...
                 alert("Please Check Your Email...")
-                window.location.href = "login.html";
+                window.location.href = "index.html";
             })
             .catch((error) => {
                 const errorCode = error.code;
