@@ -56,8 +56,8 @@ class CheckAuth{
 
           if (user) {
             // User is signed in
-            if(currentPage !== "app.html"){
-                window.location.href = "app.html";
+            if(currentPage !== "index.html"){
+                window.location.href = "index.html";
             }
         } else {
             // User is signed out
