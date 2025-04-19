@@ -71,4 +71,50 @@
 
 // let checkAuth = new CheckAuth();
 
+// Start AR Experience Button
+document.getElementById("start-ar").addEventListener("click", function() {
+  alert("AR will start here! (We'll integrate ARCore later)");
+  // In the future, this will initialize ARCore
+});
 
+// Toggle Settings Panel
+document.getElementById("settings-btn").addEventListener("click", function() {
+  const panel = document.getElementById("settings-panel");
+  panel.classList.toggle("d-none");
+});
+
+// Mock save functionality for the settings
+document.querySelector("#settings-panel button").addEventListener("click", function() {
+  alert("Settings saved! (Will connect to backend later)");
+});
+
+// Dark/Light Mode Toggle
+document.getElementById("theme-toggle").addEventListener("click", function() {
+  const body = document.body;
+  body.classList.toggle("dark-mode");
+  
+  const icon = this.querySelector("i");
+  if (body.classList.contains("dark-mode")) {
+    icon.classList.replace("bi-moon-fill", "bi-sun-fill");
+    this.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+  } else {
+    icon.classList.replace("bi-sun-fill", "bi-moon-fill");
+    this.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
+  }
+});
+
+// Loading Spinner
+document.getElementById("start-ar").addEventListener("click", function() {
+  const arView = document.getElementById("ar-view");
+  const loadingSpinner = document.getElementById("ar-loading");
+  
+  // Show loading spinner
+  loadingSpinner.classList.remove("d-none");
+  arView.querySelector("p").classList.add("d-none");
+  
+  // Simulate AR initialization (replace with ARCore later)
+  setTimeout(() => {
+    loadingSpinner.classList.add("d-none");
+    arView.innerHTML = '<p class="text-success">AR Ready! Point camera at an artifact.</p>';
+  }, 2000);
+});

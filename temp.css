@@ -1,34 +1,14 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --museum-primary: #6d4c41 !important;  /* Brown (artifact-like) */
-    --museum-secondary: #d7ccc8 !important; /* Light beige */
-    --museum-accent: #5d4037 !important;   /* Dark brown */
-  }
-
-  body {
+body {
     font-family: 'Roboto', sans-serif; /* Modern font */
     background-color: #f5f5f5;
   }
-
-  .navbar, .footer {
-    background-color: var(--museum-accent) !important; 
- }
   .card {
     border-radius: 10px;
     overflow: hidden;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   #ar-view {
     border-radius: 8px;
-    background: var(--museum-secondary); 
   }
-
 
   /* Fade-in animation for settings panel */
 #settings-panel {
@@ -57,13 +37,11 @@
 body.dark-mode {
     background-color: #121212;
     color: #e0e0e0;
-}
-
+  }
   body.dark-mode .card {
     background-color: #1e1e1e;
     color: #ffffff;
-}
-
-body.dark-mode #ar-view {
+  }
+  body.dark-mode #ar-view {
     background: #2c2c2c;
-}
+  }
