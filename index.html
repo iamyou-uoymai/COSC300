@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSC 300</title>
+  <link rel="shortcut icon" href="./assets/logo.jpg" type="image/x-icon">
+
+  <style>
+    :root {
+      --museum-primary: #6d4c41;  /* Brown (artifact-like) */
+      --museum-secondary: #d7ccc8; /* Light beige */
+      --museum-accent: #5d4037;   /* Dark brown */
+    }
+    .navbar, .footer { background-color: var(--museum-accent) !important; }
+    .card { border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    #ar-view { background: var(--museum-secondary); }
+  </style>
+
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- ARCore Library -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="d-flex flex-column flex-lg-row">
+        <a class="navbar-brand" href="#">Museum AR</a>
+        <button class="navbar-toggler position-absolute top-0 end-0 m-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav d-flex justify-content-end">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Exhibits</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                <div class="buttons d-flex mt-2">
+                  <li><button id="settings-btn" class="btn btn-sm btn-light"><i class="bi bi-gear"></i> Settings</button></li>
+                  <li><button id="theme-toggle" class="btn btn-sm btn-light ms-1"><i class="bi bi-moon-fill"></i> Dark Mode</button></li>
+                </div>
+
+            </ul>
+        </div>
+    </div>
+  </nav>
+
+  <!-- Settings Panel (Initially hidden) -->
+  <div id="settings-panel" class="container mt-3 d-none">
+    <div class="card">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">AR Settings</h5>
+      </div>
+      <div class="card-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Language</label>
+            <select class="form-select">
+              <option>English</option>
+              <option>Spanish</option>
+              <option>French</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Text Size</label>
+            <input type="range" class="form-range" min="12" max="24" step="2">
+          </div>
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="audio-toggle">
+            <label class="form-check-label" for="audio-toggle">Enable Audio Guides</label>
+          </div>
+          <button type="button" class="btn btn-sm btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <main class="container my-5">
+    <div class="row">
+        <!-- AR View (Will use ARCore later) -->
+        <div class="col-md-8 mb-4">
+          <div class="card">
+              <div class="card-body text-center">
+                  <h5 class="card-title">AR View</h5>
+                  <div id="ar-view" style="height: 400px; background: #f0f0f0; position: relative;">
+                      <!-- Placeholder (visible by default) -->
+                      <div id="ar-placeholder" class="h-100 d-flex align-items-center justify-content-center">
+                          <p class="text-muted">Camera feed will appear here</p>
+                          <div id="ar-loading" class="d-none">
+                            <div class="spinner-border text-primary"></div>
+                            <p class="mt-2">Initializing AR...</p>
+                          </div>
+                      </div>
+                      <a-scene embedded arjs="trackingMethod: best;">
+                        <a-marker preset="hiro">
+                          <a-box position="0 0.5 0" material="color: red"></a-box>
+                        </a-marker>
+                        <a-entity camera></a-entity>
+                      </a-scene>
+                  </div>
+                  <button id="start-ar" class="btn btn-primary mt-3">Start AR Experience</button>
+              </div>
+          </div>
+      </div>
+        
+        <!-- Artifact Information Panel -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Artifact Info</h5>
+                    <div id="artifact-info">
+                        <p class="text-muted">Scan an artifact to see details.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white py-2 mt-5 fixed-bottom">
+    <div class="container text-center">
+        <p>&copy; 2025 Museum AR Experience. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="./app.js" type="module" defer></script>
+</body>
+</html>
+
+
