@@ -69,7 +69,7 @@ class CheckAuth{
       }
 }
 
-let checkAuth = new CheckAuth();
+// let checkAuth = new CheckAuth();
 
 class Augmented {
   constructor(){    
@@ -116,14 +116,14 @@ class Augmented {
       const body = document.body;
       body.classList.toggle("dark-mode");
 
-      const icon = body.querySelector("i");
+      const icon = this.$themeToggle.querySelector("i");
       if(body.classList.contains("dark-mode")){
         icon.classList.replace("bi-moon-fill", "bi-sun-fill");
-        this.innerHTML = `<i class="bi bi-sun-fill"></i> Light Mode`;
+        this.$themeToggle.innerHTML = `<i class="bi bi-sun-fill"></i> Light Mode`;
       }
       else{
         icon.classList.replace("bi-sun-fill", "bi-moon-fill");
-        this.innerHTML = `<i class="bi bi-moon-fill"></i> Dark Mode`; 
+        this.$themeToggle.innerHTML = `<i class="bi bi-moon-fill"></i> Dark Mode`; 
       }
     });
   }
