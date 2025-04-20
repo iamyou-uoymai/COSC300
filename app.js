@@ -261,104 +261,104 @@ let checkAuth = new CheckAuth();
 // }
 
 
-class Artifact {
-  constructor(title, image, description) {
-    this.title = title;
-    this.image = image;
-    this.description = description;
-  }
-}
+// class Artifact {
+//   constructor(title, image, description) {
+//     this.title = title;
+//     this.image = image;
+//     this.description = description;
+//   }
+// }
 
-class AugmentedArtifacts {
-  constructor() {
-    this.allArtifacts = [
-      new Artifact("Artifact Title 1", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 1."),
-      new Artifact("Artifact Title 2", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 2."),
-      new Artifact("Artifact Title 3", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 3."),
-      new Artifact("Artifact Title 4", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 4."),
-      new Artifact("Artifact Title 5", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 5.")
-    ];
-    this.filteredArtifacts = [...this.allArtifacts];
+// class AugmentedArtifacts {
+//   constructor() {
+//     this.allArtifacts = [
+//       new Artifact("Artifact Title 1", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 1."),
+//       new Artifact("Artifact Title 2", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 2."),
+//       new Artifact("Artifact Title 3", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 3."),
+//       new Artifact("Artifact Title 4", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 4."),
+//       new Artifact("Artifact Title 5", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 5.")
+//     ];
+//     this.filteredArtifacts = [...this.allArtifacts];
 
-    this.$modal = new bootstrap.Modal(document.getElementById('artifactModal'));
-    this.$modalTitle = document.getElementById("artifactModalLabel");
-    this.$modalImage = document.getElementById("artifactImage");
-    this.$modalDescription = document.getElementById("artifactDescription");
+//     this.$modal = new bootstrap.Modal(document.getElementById('artifactModal'));
+//     this.$modalTitle = document.getElementById("artifactModalLabel");
+//     this.$modalImage = document.getElementById("artifactImage");
+//     this.$modalDescription = document.getElementById("artifactDescription");
 
-    this.$arView = document.getElementById("ar-view");
-    this.$arLoading = document.getElementById("ar-loading");
-    this.$arContent = document.getElementById("ar-content");
+//     this.$arView = document.getElementById("ar-view");
+//     this.$arLoading = document.getElementById("ar-loading");
+//     this.$arContent = document.getElementById("ar-content");
 
-    this.$searchBar = document.getElementById("search-bar");
+//     this.$searchBar = document.getElementById("search-bar");
 
-    this.renderArtifacts();
-    this.addGeneralEventListeners();
-  }
+//     this.renderArtifacts();
+//     this.addGeneralEventListeners();
+//   }
 
-  addGeneralEventListeners() {
-    document.getElementById("start-ar").addEventListener("click", () => this.startAR());
-    this.$searchBar.addEventListener("input", () => this.filterArtifacts());
-  }
+//   addGeneralEventListeners() {
+//     document.getElementById("start-ar").addEventListener("click", () => this.startAR());
+//     this.$searchBar.addEventListener("input", () => this.filterArtifacts());
+//   }
 
-  addCardEventListeners() {
-    const buttons = document.querySelectorAll(".btn-primary[data-index]");
-    buttons.forEach((btn, index) => {
-      btn.addEventListener("click", () => this.showArtifact(index));
-    });
-  }
+//   addCardEventListeners() {
+//     const buttons = document.querySelectorAll(".btn-primary[data-index]");
+//     buttons.forEach((btn, index) => {
+//       btn.addEventListener("click", () => this.showArtifact(index));
+//     });
+//   }
 
-  renderArtifacts() {
-    const gallery = document.querySelector(".row");
-    gallery.innerHTML = "";
-    this.filteredArtifacts.forEach((artifact, index) => {
-      const card = `
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <img src="${artifact.image}" class="card-img-top" alt="Artifact Image">
-            <div class="card-body">
-              <h5 class="card-title">${artifact.title}</h5>
-              <p class="card-text">${artifact.description}</p>
-              <button class="btn btn-primary w-100" data-index="${index}">View in AR</button>
-            </div>
-          </div>
-        </div>
-      `;
-      gallery.innerHTML += card;
-    });
+//   renderArtifacts() {
+//     const gallery = document.querySelector(".row");
+//     gallery.innerHTML = "";
+//     this.filteredArtifacts.forEach((artifact, index) => {
+//       const card = `
+//         <div class="col-md-4 mb-4">
+//           <div class="card">
+//             <img src="${artifact.image}" class="card-img-top" alt="Artifact Image">
+//             <div class="card-body">
+//               <h5 class="card-title">${artifact.title}</h5>
+//               <p class="card-text">${artifact.description}</p>
+//               <button class="btn btn-primary w-100" data-index="${index}">View in AR</button>
+//             </div>
+//           </div>
+//         </div>
+//       `;
+//       gallery.innerHTML += card;
+//     });
 
-    this.addCardEventListeners();
-  }
+//     this.addCardEventListeners();
+//   }
 
-  filterArtifacts() {
-    const query = this.$searchBar.value.toLowerCase();
-    this.filteredArtifacts = this.allArtifacts.filter(artifact =>
-      artifact.title.toLowerCase().includes(query)
-    );
-    this.renderArtifacts();
-  }
+//   filterArtifacts() {
+//     const query = this.$searchBar.value.toLowerCase();
+//     this.filteredArtifacts = this.allArtifacts.filter(artifact =>
+//       artifact.title.toLowerCase().includes(query)
+//     );
+//     this.renderArtifacts();
+//   }
 
-  showArtifact(index) {
-    const artifact = this.filteredArtifacts[index];
-    if (!artifact) return;
+//   showArtifact(index) {
+//     const artifact = this.filteredArtifacts[index];
+//     if (!artifact) return;
 
-    this.$modalTitle.textContent = artifact.title;
-    this.$modalImage.src = artifact.image;
-    this.$modalDescription.textContent = artifact.description;
-    this.$modal.show();
-  }
+//     this.$modalTitle.textContent = artifact.title;
+//     this.$modalImage.src = artifact.image;
+//     this.$modalDescription.textContent = artifact.description;
+//     this.$modal.show();
+//   }
 
-  startAR() {
-    document.getElementById("start-ar").classList.add("d-none");
-    this.$arView.classList.remove("d-none");
+//   startAR() {
+//     document.getElementById("start-ar").classList.add("d-none");
+//     this.$arView.classList.remove("d-none");
 
-    setTimeout(() => {
-      this.$arLoading.classList.add("d-none");
-      this.$arContent.classList.remove("d-none");
-    }, 2000);
-  }
-}
+//     setTimeout(() => {
+//       this.$arLoading.classList.add("d-none");
+//       this.$arContent.classList.remove("d-none");
+//     }, 2000);
+//   }
+// }
 
 // Initialize after DOM is fully loaded
-document.addEventListener("DOMContentLoaded", () => {
-  new AugmentedArtifacts();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   new AugmentedArtifacts();
+// });
