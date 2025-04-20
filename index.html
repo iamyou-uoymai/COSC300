@@ -3,16 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Augmented Museum Artifacts</title>
+  <title>COSC300</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    #ar-view {
-      display: none;
-    }
-  </style>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
@@ -29,17 +22,49 @@
           <li class="nav-item"><a class="nav-link" href="#">Exhibits</a></li>
           <li class="nav-item"><a class="nav-link" href="#">About</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+          <div class="buttons d-flex mt-2">
+            <li><button id="settings-btn" class="btn btn-sm btn-light"><i class="bi bi-gear"></i> Settings</button></li>
+            <li><button id="theme-toggle" class="btn btn-sm btn-light ms-1"><i class="bi bi-moon-fill"></i> Dark Mode</button></li>
+          </div>
         </ul>
       </div>
     </div>
   </nav>
+
+  <div id="settings-panel" class="container mt-3 d-none">
+    <div class="card">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">AR Settings</h5>
+      </div>
+      <div class="card-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Language</label>
+            <select class="form-select">
+              <option>English</option>
+              <option>Spanish</option>
+              <option>French</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Text Size</label>
+            <input type="range" class="form-range" min="12" max="24" step="2">
+          </div>
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="audio-toggle">
+            <label class="form-check-label" for="audio-toggle">Enable Audio Guides</label>
+          </div>
+          <button type="button" class="btn btn-sm btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Header and Search -->
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h1 class="h3">Museum Artifacts</h1>
       <input id="search-bar" type="text" class="form-control w-50" placeholder="Search artifacts...">
-      <a href="./ar.html">here</a>
     </div>
 
     <!-- Artifact Cards -->
@@ -83,103 +108,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Application JS -->
-  <script>
-    class Artifact {
-      constructor(title, image, description) {
-        this.title = title;
-        this.image = image;
-        this.description = description;
-      }
-    }
-
-    class AugmentedArtifacts {
-      constructor() {
-        this.originalArtifacts = [
-          new Artifact("Artifact Title 1", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 1."),
-          new Artifact("Artifact Title 2", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 2."),
-          new Artifact("Artifact Title 3", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 3."),
-          new Artifact("Artifact Title 4", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 4."),
-          new Artifact("Artifact Title 5", "https://via.placeholder.com/600x300", "This is a detailed description of Artifact 5.")
-        ];
-
-        this.artifacts = [...this.originalArtifacts];
-
-        this.$modal = new bootstrap.Modal(document.getElementById('artifactModal'));
-        this.$modalTitle = document.getElementById("artifactModalLabel");
-        this.$modalImage = document.getElementById("artifactImage");
-        this.$modalDescription = document.getElementById("artifactDescription");
-
-        this.$arView = document.getElementById("ar-view");
-        this.$arLoading = document.getElementById("ar-loading");
-        this.$arContent = document.getElementById("ar-content");
-
-        this.$searchBar = document.getElementById("search-bar");
-        this.renderArtifacts();
-        this.addEventListeners();
-      }
-
-      addEventListeners() {
-        document.getElementById("start-ar").addEventListener("click", () => this.startAR());
-        this.$searchBar.addEventListener("input", () => this.filterArtifacts());
-        document.getElementById("artifact-gallery").addEventListener("click", (e) => {
-          if (e.target.classList.contains("btn-primary")) {
-            const index = e.target.getAttribute("data-index");
-            this.showArtifact(parseInt(index));
-          }
-        });
-      }
-
-      renderArtifacts() {
-        const gallery = document.getElementById("artifact-gallery");
-        gallery.innerHTML = "";
-        this.artifacts.forEach((artifact, index) => {
-          const card = `
-            <div class="col-md-4 mb-4">
-              <div class="card h-100">
-                <img src="${artifact.image}" class="card-img-top" alt="Artifact Image">
-                <div class="card-body d-flex flex-column">
-                  <h5 class="card-title">${artifact.title}</h5>
-                  <p class="card-text">${artifact.description}</p>
-                  <button class="btn btn-primary mt-auto w-100" data-index="${index}">View in AR</button>
-                </div>
-              </div>
-            </div>
-          `;
-          gallery.innerHTML += card;
-        });
-      }
-
-      filterArtifacts() {
-        const query = this.$searchBar.value.toLowerCase();
-        this.artifacts = this.originalArtifacts.filter(artifact =>
-          artifact.title.toLowerCase().includes(query)
-        );
-        this.renderArtifacts();
-      }
-
-      showArtifact(index) {
-        const artifact = this.artifacts[index];
-        if (!artifact) return;
-        this.$modalTitle.textContent = artifact.title;
-        this.$modalImage.src = artifact.image;
-        this.$modalDescription.textContent = artifact.description;
-        this.$modal.show();
-      }
-
-      startAR() {
-        document.getElementById("start-ar").classList.add("d-none");
-        this.$arView.style.display = "block";
-        setTimeout(() => {
-          this.$arLoading.classList.add("d-none");
-          this.$arContent.classList.remove("d-none");
-        }, 2000);
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      new AugmentedArtifacts();
-    });
-  </script>
+  <script src="./app.js" type="module"></script>
 
 </body>
 </html>

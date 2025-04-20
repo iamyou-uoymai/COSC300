@@ -3,61 +3,10 @@
     padding: 0;
     box-sizing: border-box;
 }
-/* 
-  body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
-  }
-  .card {
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  #ar-view {
-    border-radius: 8px;
-  }
 
-#settings-panel {
-    transition: opacity 0.3s ease-in-out;
-  }
-  #settings-panel.d-none {
-    opacity: 0;
-    display: block !important;
-    visibility: hidden;
-    height: 0;
-    overflow: hidden;
-  }
-  #settings-panel:not(.d-none) {
-    opacity: 1;
-    visibility: visible;
-    height: auto;
-  }
-  
-  .btn:hover {
-    transform: translateY(-2px);
-    transition: transform 0.2s;
-  }
-
-body.dark-mode {
-  background-color: #121212;
-  color: #e0e0e0;
+body {
+  background-color: #f8f9fa;
 }
-body.dark-mode .card {
-  background-color: #1e1e1e;
-  color: #ffffff;
+#ar-view {
+  display: none;
 }
-
-body.dark-mode #ar-view {
-  background: #2c2c2c;
-}
-
-#ar-placeholder canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
- */
-
- /* Styling the card */
