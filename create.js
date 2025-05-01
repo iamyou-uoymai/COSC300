@@ -5,12 +5,12 @@ import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAyY0zykCHbjDwrq_8RwE-DLsWJYC21GmE",
-    authDomain: "cosc300-17c66.firebaseapp.com",
-    projectId: "cosc300-17c66",
-    storageBucket: "cosc300-17c66.firebasestorage.app",
-    messagingSenderId: "444715025539",
-    appId: "1:444715025539:web:633ef8a5c41a3ab91987b6"
+    apiKey: "AIzaSyBBkGFjdhNVG7wNWRQLjhC8q7qCXBZrw_4",
+    authDomain: "museumar-2ce3e.firebaseapp.com",
+    projectId: "museumar-2ce3e",
+    storageBucket: "museumar-2ce3e.firebasestorage.app",
+    messagingSenderId: "337419214136",
+    appId: "1:337419214136:web:a09b8faf7f79ba382375cd"
 };
 
 // Initialize Firebase
