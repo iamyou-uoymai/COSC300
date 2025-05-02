@@ -104,7 +104,7 @@ class AugmentedArtifacts {
     this.$settingsBtn = document.getElementById("settings-btn");
     this.$settingsPanelBtn = document.querySelector("#settings-panel button");
 
-    this.renderArtifacts();
+    // this.renderArtifacts();
     this.addEventListeners();
   }
 
@@ -124,25 +124,25 @@ class AugmentedArtifacts {
     });
   }
 
-  // renderArtifacts() {
-  //   const gallery = document.getElementById("artifact-gallery");
-  //   gallery.innerHTML = "";
-  //   this.artifacts.forEach((artifact, index) => {
-  //     const card = `
-  //       <div class="col-md-4 mb-4">
-  //         <div class="card h-100">
-  //           <img src="${artifact.image}" class="card-img-top" alt="Artifact Image">
-  //           <div class="card-body d-flex flex-column">
-  //             <h5 class="card-title">${artifact.title}</h5>
-  //             <p class="card-text">${artifact.description}</p>
-  //             <button class="btn btn-primary mt-auto w-100" data-index="${index}">View in AR</button>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     `;
-  //     gallery.innerHTML += card;
-  //   });
-  // }
+  renderArtifacts() {
+    const gallery = document.getElementById("artifact-gallery");
+    gallery.innerHTML = "";
+    this.artifacts.forEach((artifact, index) => {
+      const card = `
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img src="${artifact.image}" class="card-img-top" alt="Artifact Image">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">${artifact.title}</h5>
+              <p class="card-text">${artifact.description}</p>
+              <button class="btn btn-primary mt-auto w-100" data-index="${index}">View in AR</button>
+            </div>
+          </div>
+        </div>
+      `;
+      gallery.innerHTML += card;
+    });
+  }
 
   filterArtifacts() {
     const query = this.$searchBar.value.toLowerCase();
