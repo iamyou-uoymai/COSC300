@@ -12,7 +12,7 @@ function openCamera() {
     const closeBtn = document.createElement('button');
     closeBtn.textContent = '✕';
     closeBtn.style.position = 'fixed';
-    closeBtn.style.top = '35%';
+    closeBtn.style.top = '27%';
     closeBtn.style.right = '5px';
     closeBtn.style.zIndex = '1001';
     closeBtn.style.background = 'red';
