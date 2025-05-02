@@ -77,5 +77,6 @@ function openCamera() {
   viewArBtn.forEach((button) =>{
     button.addEventListener("click", (event) =>{
         openCamera();
+        document.querySelector(".row").style.display = "none";
     });
   });
