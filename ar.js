@@ -12,10 +12,12 @@ function openCamera() {
     const closeBtn = document.createElement('button');
     closeBtn.textContent = '✕';
     closeBtn.style.position = 'fixed';
-    closeBtn.style.top = '20px';
-    closeBtn.style.right = '20px';
+    closeBtn.style.top = '35%';
+    closeBtn.style.right = '5px';
     closeBtn.style.zIndex = '1001';
     closeBtn.style.background = 'red';
+    closeBtn.style.color = "white";
+    closeBtn.style.border = "none";
     closeBtn.onclick = () => {
       document.body.removeChild(video);
       document.body.removeChild(closeBtn);
@@ -23,6 +25,8 @@ function openCamera() {
         video.srcObject.getTracks().forEach(track => track.stop());
       }
       clearInterval(scanInterval); // Stop scanning when closed
+      location.reload();
+
     };
 
     // Canvas for QR processing (hidden)
