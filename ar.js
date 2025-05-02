@@ -52,7 +52,6 @@ const viewArBtn = document.querySelectorAll(".view-ar-btn");
     }
   }
 
-
 viewArBtn.forEach((button) =>{
     button.addEventListener("click", (event) =>{
         openCamera();
