@@ -29,13 +29,17 @@ console.log(db);
 
 class CheckAuth{
     constructor(){
+      this.$username = document.querySelector("#username");
+      this.$logOutBtn = document.querySelector("#log-out-button");
 
         this.addEventListeners();
         this.handleAuthentication();
     }
 
     addEventListeners(){
-
+      this.$logOutBtn.addEventListener("click", (event) =>{
+        this.handleLogOut();
+      });
     }
 
     handleLogOut() {
@@ -56,8 +60,9 @@ class CheckAuth{
 
           if (user) {
             // User is signed in
+            this.$username.textContent = user.displayName;
             if(currentPage !== "index.html"){
-                window.location.href = "index.html";
+              window.location.href = "index.html";
             }
         } else {
             // User is signed out
