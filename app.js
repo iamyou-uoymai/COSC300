@@ -1,17 +1,16 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-// TODO: Add SDKs for Firebase products that you want to use
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBBkGFjdhNVG7wNWRQLjhC8q7qCXBZrw_4",
-  authDomain: "museumar-2ce3e.firebaseapp.com",
-  projectId: "museumar-2ce3e",
-  storageBucket: "museumar-2ce3e.firebasestorage.app",
-  messagingSenderId: "337419214136",
-  appId: "1:337419214136:web:a09b8faf7f79ba382375cd"
+  apiKey: "AIzaSyDCrnnFOvQgkVnDhltaZxiH19PEECNUqd8",
+  authDomain: "cosc300-project-latest.firebaseapp.com",
+  projectId: "cosc300-project-latest",
+  storageBucket: "cosc300-project-latest.firebasestorage.app",
+  messagingSenderId: "149525486396",
+  appId: "1:149525486396:web:5c7f6edd0d9c4d35619c39",
+  measurementId: "G-D7HYG3SE2W"
 };
 
 // Initialize Firebase
@@ -22,59 +21,8 @@ console.log(app);
 const auth = getAuth(app);
 console.log(auth);
 
-// Firebase Firestore
-// Initialize Firestore
-const db = getFirestore(app);
-console.log(db);
-
-class CheckAuth{
-    constructor(){
-      this.$username = document.querySelector("#username");
-      this.$logOutBtn = document.querySelector("#log-out-button");
-
-        this.addEventListeners();
-        this.handleAuthentication();
-    }
-
-    addEventListeners(){
-      this.$logOutBtn.addEventListener("click", (event) =>{
-        this.handleLogOut();
-      });
-    }
-
-    handleLogOut() {
-        signOut(auth)
-          .then(() => {
-            // Sign-out successful.
-            window.location.href = "login.html";
-        })
-          .catch((error) => {
-            // An error happened.
-            alert(error);
-          });
-      }
-
-    handleAuthentication() {
-        onAuthStateChanged(auth, (user) => {
-            const currentPage = window.location.pathname.split("/").pop(); // Get the current page filename
-
-          if (user) {
-            // User is signed in
-            this.$username.textContent = user.displayName;
-            if(currentPage !== "index.html"){
-              window.location.href = "index.html";
-            }
-        } else {
-            // User is signed out
-            if(currentPage !=="create.html"){
-                window.location.href = "create.html";
-            }
-        }
-        });
-      }
-}
-
-let checkAuth = new CheckAuth();
+//Export
+export { app, auth };
 
 class Artifact {
   constructor(title, image, description) {

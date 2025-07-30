@@ -16,6 +16,12 @@
     color: #fff !important;
   }
   
+body{
+            background-color: black;
+            color: white;
+            min-height: 100vh;
+        }
+
 .form-container {
   max-width: 400px;
 }
