@@ -1,5 +1,5 @@
 import { auth } from "./app.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 class Login {
     constructor() {
@@ -31,4 +31,22 @@ class Login {
 }
 
 let login = new Login();
+// Google sign-in logic
+document.addEventListener('DOMContentLoaded', () => {
+  const googleBtn = document.getElementById('google-signin');
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        alert('Google sign-in successful!');
+        window.location.href = 'index.html';
+      } catch (error) {
+        console.error('Google sign-in error:', error);
+        alert(error.message || 'Google sign-in failed.');
+      }
+    });
+  }
+});
 console.log(login);
