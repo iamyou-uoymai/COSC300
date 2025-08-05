@@ -1,40 +1,30 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 // TODO: Add SDKs for Firebase products that you want to use
-import { getAuth, sendPasswordResetEmail  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-class Reset{
-    constructor(){
-        this.$submitResetButton = document.querySelector("#submit-reset");
+import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { auth } from "./app.js"; // Make sure your app.js exports 'auth'
 
-        this.addEventListeners();
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  const resetBtn = document.getElementById("submit-reset");
+  const emailInput = document.getElementById("reset-email");
 
-    addEventListeners(){
-        this.$submitResetButton.addEventListener("click", (event) =>{
-            event.preventDefault();
+  if (resetBtn && emailInput) {
+    resetBtn.addEventListener("click", async (event) => {
+      event.preventDefault();
+      const email = emailInput.value.trim();
 
-            this.$resetEmail = document.querySelector("#reset-email").value;
+      if (!email) {
+        alert("Please enter your email address.");
+        return;
+      }
 
-            if(!this.$resetEmail){
-                alert("Please Provide your email.");
-            }
-
-            sendPasswordResetEmail(auth, this.$resetEmail)
-            .then(() => {
-                // Password reset email sent!
-                // ...
-                alert("Please Check Your Email...")
-                window.location.href = "login.html";
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                // ..
-                alert(errorMessage);
-            })
-        });
-    }
-}
-
-let reset = new Reset();
-console.log(reset);
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert("A password reset link has been sent to your email.");
+      } catch (error) {
+        console.error("Password reset error:", error);
+        alert(error.message || "Failed to send reset email.");
+      }
+    });
+  }
+});

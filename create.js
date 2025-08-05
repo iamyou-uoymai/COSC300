@@ -15,7 +15,7 @@ class Register {
             event.preventDefault();
 
             // Get form values
-            this
+            this.$RegisterName = document.querySelector("#register-name").value; // <-- Add this line
             this.$RegisterEmail = document.querySelector("#register-email").value;
             this.$RegisterPassword = document.querySelector("#register-password").value;
             this.$RetypePassword = document.querySelector("#retype-password").value;
