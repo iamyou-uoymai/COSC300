@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-import { createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {auth, app} from "./app.js";
 
@@ -58,16 +58,10 @@ class Register {
                 // Update the user's profile with their name
                 await updateProfile(user, { displayName: this.$RegisterName });
 
-                /*// Save additional user details to Firestore
-                await setDoc(doc(db, "users", user.uid), {
-                    userId: user.uid,
-                    name: this.$RegisterName,
-                    email: this.$RegisterEmail,
-                    phone: this.$PhoneNumber, // Save the phone number
-                    timestamp: new Date()
-                });*/
+                // Send email verification
+                await sendEmailVerification(user);
 
-                alert("Your account has been created successfully!");
+                alert("Your account has been created successfully! Please check your email to verify your account.");
                 window.location.href = "login.html"; // Redirect to the login page
             } catch (error) {
                 console.error("Error during registration:", error);
