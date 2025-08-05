@@ -3,33 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>COSC300</title>
+  <title>COSC300  </title>
   <link rel="stylesheet" href="./login.css">
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
+  <!--font Awosome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" >
+
+  <style>
+            body {
+                 background: linear-gradient(rgba(0, 0, 0, 0.85),  rgba(0, 0, 0, 0.9 )),
+                                  url('./assets/museum-background.png') no-repeat center center fixed; 
+
+                      background-size: cover;
+                      color: white !important;
+                      min-height: 100vh;
+                      position: relative;
+            }
+     .logo-container{
+                  background: rgba(0, 0, 0, 0.5);
+                  border-radius: 50%;
+                  padding: 12px;
+                  display: inline-block;
+                  backdrop-filter: blur(4px);
+                  border: 1px solid rgba(255, 225, 255, 0.1);
+        }
+
+        .logo-image{
+          filter: 
+                drop-shadow(0 0 4px rgba(252, 251, 251, 0.993))
+                  brightness(1.1)
+                   contrast(1.2);
+
+          width: 270px;
+          height: 120px;
+          object-fit: contain;
+        }
+  </style>
+
 </head>
 <body>
   <div class="login">
     <div class="form-container">
-        <h1 class="fs-2 text-center">Login</h1>
+        <div class="text-center mb-4">
+          <div class="logo-container">
+            <img src="./assets/museum-logo.png" alt="Museum Logo" class="logo-image " >
+           </div>
 
-        <p class="text-center">Sign in to Continue</p>
+        <h1 class="fs-2 text-center">Log in  </h1>
+
+        <p class="text-muted">Sign in to Access Museum Augmented Reality Experience</p>
+       </div>
 
         <form>
-        <label for="email" class="form-label">EMAIL</label>
+          
+        <label for="email" class="form-label">Email</label> 
         <input type="email" class="form-control" id="login-email" placeholder="comet@gmail.com">
 
         <label for="password" class="form-label">PASSWORD</label>
         <input type="password" class="form-control" id="login-password" placeholder="******">
 
+
+                 <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                         <input class="form-check-input" type="checkbox"  id="rememberMe">
+                         <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                      <a class="text-light" href="./reset.html">Forgot Password?</a>
+              </div>
         <button id="submit-login" type="submit" class="btn btn-light login-in-btn my-3">Login</button>
+        
         <button id="google-signin" type="button" class="btn btn-danger w-100 mb-2">Sign in with Google</button>
+              
+                <div class="text-center mt-4">
+                  <p class="text-muted">Don't have an account ?  <a href="./create.html" class="text-light 
+                              fw-bold" >Sign up</a></p>
+                              </div>
         </form>
-        <a class="text-light" href="./reset.html">Forgot Password?</a>
+       
     </div>
   </div>
+           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
       <script src="./login.js" type="module" defer></script>
+
+      <script>
+          sessionStorage.setItem('visited','true');
+      </script>
 </body>
 </html>

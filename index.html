@@ -190,5 +190,13 @@
   <script src="./app.js" type="module" defer></script>
   <script src="./ar.js" type="module" defer></script>
 
+      <!--redirect to login page when accessing --> 
+  <script>
+  
+    if(!sessionStorage.getItem('visited')){
+      window.location.href = 'login.html' ; 
+    }
+  </script>
+          
 </body>
 </html>

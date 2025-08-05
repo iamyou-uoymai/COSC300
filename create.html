@@ -8,12 +8,21 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+      <!-- Font Awesome -->
+             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+            
     <style>
         body{
-            background-color: black;
+
+            background: linear-gradient(rgba(0, 0, 0, 0.85),  rgba(0, 0, 0, 0.9)),
+                                    url('./assets/museum-background.png') no-repeat center center fixed;
+
+            background-size: cover;
             color: white !important;
             min-height: 100vh;
+            position: relative;
         }
     </style>
 
@@ -22,16 +31,25 @@
 
     <div class="registration">
     <div class="form-container">
-        <h1 class="fs-2">Create new Account</h1>
+           <div class="text-center mb-4">
+               <img src="./assets/museum-logo.png" alt="Museum Logo" class="logo-image mb-3" style="width: 80px;">
+                 
+                   <p class="text-muted">Join our Museum Augmented Reality Experience </p> 
+           <h1 class="fs-2">Create new Account</h1>
 
-        <p class="text-center">Already Registered? <a href="./login.html" class="text-light">Log in here.</a></p>
-
+          </div>
         <form autocomplete="off">
-        <label for="name" class="form-label">NAME</label>
-        <input type="text" class="form-control" id="register-name" placeholder="Comet" required>
 
-        <label for="email" class="form-label">EMAIL</label>
+         <label for="name" class="form-label">NAME</label> 
+        <input type="text" class="form-control" id="register-name" placeholder="Comet" required>
+                   
+
+                    
+        <label for="email" class="form-label">EMAIL</label> 
         <input type="email" class="form-control" id="register-email" placeholder="comet@gmail.com" required>
+        
+         <label for="phoneNumber" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="phone-number" placeholder="0768318775" required>
 
         <label for="password" class="form-label">PASSWORD</label>
         <input type="password" class="form-control" id="register-password" placeholder="******" required>
@@ -39,11 +57,19 @@
         <label for="retype-password" class="form-label">RETYPE PASSWORD</label>
         <input type="password" class="form-control" id="retype-password" placeholder="Retype password" required>
 
-        <label for="phoneNumber" class="form-label">Phone Number</label>
-        <input type="tel" class="form-control" id="phone-number" placeholder="0768318775" required>
+       
 
-        <button id="submit-registration" type="submit" class="btn btn-light sign-up-btn mt-3">Sign up</button>
-        <button id="google-signup" type="button" class="btn btn-danger w-100 mt-2">Sign up with Google</button>
+        <button id="submit-registration" type="submit" class="btn btn-light sign-up-btn mt-3">
+                             
+            <i class="fas fa-user-plus me-2"></i> Sign up</button>
+
+        <button id="google-signup" type="button" class="btn btn-danger w-100 mt-2">
+                   <i class="fab fa-google me-2"></i> Sign up with Google</button>
+
+
+                   <div class="text-center mt-3">
+                       <p class="text-muted">Already have an account? <a href="./login.html" class="text-light">Log in here.</a> </p> 
+                   </div>
         </form>
     </div>
     </div>
