@@ -1,4 +1,4 @@
-const viewArBtn = document.querySelectorAll(".view-ar-btn");
+/* const viewArBtn = document.querySelectorAll(".view-ar-btn");
 
 function openCamera() {
     const video = document.createElement('video');
@@ -83,4 +83,4 @@ function openCamera() {
         openCamera();
         document.querySelector(".row").style.display = "none";
     });
-  });
+  }); */

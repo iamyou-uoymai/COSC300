@@ -24,6 +24,7 @@ console.log(auth);
 //Export
 export { app, auth };
 
+
 class Artifact {
   constructor(title, image, description) {
     this.title = title;
@@ -31,6 +32,19 @@ class Artifact {
     this.description = description;
   }
 }
+
+// Fetch request to the local server
+fetch('/api/describe', {
+  method: 'GET', // or 'POST' depending on your API
+  headers: {
+    'Content-Type': 'application/json',
+    // Add any other headers your API requires
+  },
+  // body: JSON.stringify(data) // Uncomment and modify if you need to send data
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 
 class AugmentedArtifacts {
   constructor() {
