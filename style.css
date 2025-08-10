@@ -132,6 +132,51 @@ body {
   font-size: 1rem;
 }
 
+/* Dark mode styles */
+body.dark-mode {
+  background-color: #181a1b !important;
+  color: #f1f1f1 !important;
+}
+body.dark-mode .card,
+body.dark-mode .modal-content,
+body.dark-mode .navbar,
+body.dark-mode .offcanvas,
+body.dark-mode .card-header {
+  background-color: #23272b !important;
+  color: #f1f1f1 !important;
+}
+body.dark-mode .btn-primary,
+body.dark-mode .btn-danger,
+body.dark-mode .btn-light {
+  background-color: #343a40 !important;
+  color: #f1f1f1 !important;
+  border: none;
+}
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #23272b !important;
+  color: #f1f1f1 !important;
+  border: 1px solid #444;
+}
+body.dark-mode #search-bar {
+  background-color: #23272b !important;
+  color: #fff !important;         /* White text in dark mode */
+  border: 1px solid #444;
+}
+
+/* Sidebar (offcanvas) text color in dark mode */
+body.dark-mode .offcanvas,
+body.dark-mode .offcanvas .offcanvas-header,
+body.dark-mode .offcanvas .offcanvas-body,
+body.dark-mode .offcanvas .offcanvas-title,
+body.dark-mode .offcanvas .btn,
+body.dark-mode .offcanvas .text-muted,
+body.dark-mode .offcanvas h6,
+body.dark-mode .offcanvas p {
+  color: #fff !important;
+  background-color: #23272b !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 991px) {
   .container {

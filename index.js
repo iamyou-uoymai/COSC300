@@ -42,6 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Home button redirect
+  const homeBtn = document.getElementById('home-btn');
+  if (homeBtn) {
+    homeBtn.addEventListener('click', function() {
+      window.location.href = 'index.html';
+    });
+  }
+
   // User details in sidebar
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -68,5 +76,25 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Error signing out: ' + error.message);
       }
     });
+  }
+
+  // Dark mode logic
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  themeToggleBtn?.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    // Optionally, save preference
+    if (document.body.classList.contains('dark-mode')) {
+      localStorage.setItem('theme', 'dark');
+      themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+    } else {
+      localStorage.setItem('theme', 'light');
+      themeToggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
+    }
+  });
+
+  // On load, apply saved theme
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    if (themeToggleBtn) themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
   }
 });

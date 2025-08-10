@@ -29,6 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Home button logic
+  const homeBtn = document.getElementById('home-btn');
+  if (homeBtn) {
+    homeBtn.addEventListener('click', function() {
+      window.location.href = '../index.html';
+    });
+  }
+
   // Text-to-speech logic
   const ttsBtn = document.getElementById('text-2-speech');
   if (!ttsBtn) return;
