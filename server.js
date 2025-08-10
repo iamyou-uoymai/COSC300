@@ -7,7 +7,7 @@ const app = express();
 const PORT = 3000;
 
 // Path to your downloaded OAuth 2.0 client secret JSON
-const CREDENTIALS_PATH = 'gen-lang-client-0856632337-1770322575b2.json';
+const CREDENTIALS_PATH = 'C:/Users/Chuene Chokoe/Desktop/School/gen-lang-client-0856632337-ddf6b66d7771.json';
 
 app.use(cors());
 app.use(bodyParser.json());
