@@ -7,3 +7,155 @@
 .nav-head:hover{
     cursor: pointer;
 }
+
+/* General body and container styling */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+/* Navbar */
+.navbar {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  font-size: 1.1rem;
+  margin-right: 10px;
+}
+
+.nav-link.active {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+/* Offcanvas sidebar */
+.offcanvas-header {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.offcanvas-body {
+  padding-bottom: 2rem;
+}
+
+/* Settings panel */
+#settings-panel .card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+/* Artifact Gallery */
+#artifact-gallery {
+  margin-top: 2rem;
+}
+
+.card {
+  border-radius: 14px;
+  border: none;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: #fff;
+}
+
+.card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.card-img-top {
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  object-fit: contain;
+  height: 220px;           /* Increased from 140px to 220px */
+  background: #f1f3f4;
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-size: 0.98rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.view-ar-btn {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.view-ar-btn:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+
+/* Modal */
+.modal-content {
+  border-radius: 14px;
+}
+
+.modal-title {
+  font-weight: 600;
+}
+
+#artifactImage {
+  border-radius: 10px;
+  background: #f8f9fa;
+  padding: 10px;
+  max-height: 350px;
+  object-fit: contain;
+}
+
+/* Search bar */
+#search-bar {
+  max-width: 350px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  #artifact-gallery {
+    margin-top: 1rem;
+  }
+  .card-img-top {
+    height: 160px;         /* Increased from 100px to 160px for mobile */
+  }
+}
+
+/* Buttons */
+.btn-primary, .btn-danger, .btn-light, .btn-sm, .btn {
+  border-radius: 8px !important;
+}
+
+/* Hide scrollbars in offcanvas for a cleaner look */
+.offcanvas {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.offcanvas::-webkit-scrollbar {
+  display: none;
+}

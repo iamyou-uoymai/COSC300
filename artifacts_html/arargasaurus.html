@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>COSC300</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
-      <!-- Side Bar -->
-      <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
-          <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="username" id="offcanvasWithBothOptionsLabel"></h5>
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body fixed-bottom">
-            <button id="log-out-button" type="button" class="btn btn-danger">Log Out</button>
-          </div>
+  <!-- Side Bar -->
+  <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+      <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="username" id="offcanvasWithBothOptionsLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
+      <div class="offcanvas-body fixed-bottom">
+        <button id="log-out-button" type="button" class="btn btn-danger">Log Out</button>
+      </div>
+  </div>
 
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -84,12 +84,12 @@
         <h5 class="mb-0">Arargasaurus QR Code</h5>
       </div>
       <div class="card-body text-center">
-        <img src="Arargasaurus_QR.png" alt="Arargasaurus QR Code" style="max-width: 250px; width: 100%; height: auto;">
+        <img src="Arargasaurus_QR.png" alt="Arargasaurus QR Code" class="card-img-top" style="max-width: 350px; width: 100%; height: auto;">
         <p class="mt-2" id="arargasaurus-desc">
           Aragosaurus in Augmented Reality
           Encounter Aragosaurus ischiaticus, a sauropod dinosaur from the Early Cretaceous period, approximately 125 million years ago. Discovered in present-day Spain, this herbivorous giant could reach over 18 meters in length. Through augmented reality, examine its skeletal structure, posture, and likely skin texture as it appears within your own environment. Rotate, scale, and observe the specimen to appreciate its scale and the adaptations that allowed it to thrive in prehistoric ecosystems.
         </p>
-        <button id="text-2-speech" class="btn btn-secondary mt-2">text-to-speech</button>
+        <button id="text-2-speech" class="btn btn-secondary mt-2">Text-to-Speech</button>
       </div>
     </div>
 
@@ -123,6 +123,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
-  <script src="./script.js"></script>
+  <script src="../script.js"></script>
 </body>
 </html>
