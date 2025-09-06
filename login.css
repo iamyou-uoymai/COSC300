@@ -82,3 +82,16 @@ body{
 #login-password {
   padding-right: 40px;
 }
+
+.alert-danger {
+   background-color: rgba(220, 53, 69, 0.1);
+   border: 1px solid rgba(220, 53, 69, 0.3);
+   color: #fff;
+   border-radius: 8px;
+   animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+      to {opacity: 1;  transform: translateY(0);}
+}
