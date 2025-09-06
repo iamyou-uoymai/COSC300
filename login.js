@@ -5,6 +5,7 @@ class Login {
     constructor() {
         this.$submitLogin = document.querySelector("#submit-login");
         this.addEventListeners();
+        this.setupPasswordToggle();
     }
 
     addEventListeners() {
@@ -27,6 +28,28 @@ class Login {
                 alert(error.message);
             }
         });
+    }
+
+    setupPasswordToggle(){
+       const passwordToggle =document.getElementById('password-toggle');
+       const passwordInput = document.getElementById('login-password');
+
+       if (passwordToggle && passwordInput){
+               passwordToggle.addEventListener('click', function() {
+                     
+                   if (passwordInput.type === 'password'){
+                        passwordInput.type = 'text';
+                        passwordToggle.innerHTML = '<i class="far fa-eye-slash"></i>';
+                        passwordToggle.setAttribute( 'aria-label', 'Hide password');
+                   }else {
+                       
+                        passwordInput.type = 'password';
+                        passwordToggle.innerHTML = '<i class="far fa-eye"></i>';
+                        passwordToggle.setAttribute('aria-label', 'Show password');
+                   }
+                   
+               });
+       }
     }
 }
 
