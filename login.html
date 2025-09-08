@@ -58,13 +58,26 @@
        </div>
 
         <form>
-          
+              
+              <div id="loading-spinner" class="d-none text-center py-3">
+
+                <div class="spinner-border text-light " role="status">
+                   <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Signing in....</p>
+              </div>
         <label for="email" class="form-label">Email</label> 
         <input type="email" class="form-control" id="login-email" placeholder="xxx@gmail.com">
 
         <label for="password" class="form-label">PASSWORD</label>
-        <input type="password" class="form-control" id="login-password" placeholder="******">
-
+             <div class = "password-input-group">
+                 <input type="password" class="form-control" id="login-password" placeholder="******">
+                  
+                    <button type ="button" class="password-toggle" id="password-toggle" aria-label="Show passoword">
+                          
+                         <i class="far fa-eye"></i>
+                    </button>
+             </div>
 
                  <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="form-check">
