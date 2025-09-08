@@ -27,6 +27,13 @@ class Register {
                 return;
             }
 
+            // Phone number validation
+            const phonePattern = /^(07|08|06)\d{8}$/;
+            if (!phonePattern.test(this.$PhoneNumber)) {
+                alert("Phone number must be 10 digits and start with 07, 08, or 06.");
+                return;
+            }
+
             // Check if passwords match
             if (this.$RegisterPassword !== this.$RetypePassword) {
                 alert("Passwords do not match. Please retype your password.");
