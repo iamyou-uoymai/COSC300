@@ -165,6 +165,128 @@
       width: 100%;
       overflow-x: hidden;
     }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: #e0e0e0;
+    }
+    
+    .dark-mode .main-header {
+      background: rgba(0, 0, 0, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark-mode .main-sidebar {
+      background: rgba(0, 0, 0, 0.7);
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark-mode .content-area {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark-mode .artifact-card {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .dark-mode .artifact-card:hover {
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    }
+    
+    .dark-mode .stats-card {
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(30, 30, 30, 0.6));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .dark-mode .search-controls {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .dark-mode .form-control {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #e0e0e0;
+    }
+    
+    .dark-mode .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .dark-mode .form-control:focus {
+      background: rgba(0, 0, 0, 0.8);
+      border-color: #6c757d;
+      color: #e0e0e0;
+      box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+    }
+    
+    .dark-mode .list-group-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #e0e0e0;
+    }
+    
+    .dark-mode .list-group-item:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .dark-mode .list-group-item.active {
+      background: rgba(108, 117, 125, 0.5);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .dark-mode .modal-content {
+      background: #1a1a1a !important;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark-mode .btn-outline-light {
+      border-color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .dark-mode .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.7);
+      color: #fff;
+    }
+    
+    /* Theme toggle button specific styles */
+    #theme-toggle {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #theme-toggle:hover {
+      transform: scale(1.05);
+    }
+    
+    .dark-mode #theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Smooth transitions for theme changes */
+    body {
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    .main-header,
+    .main-sidebar,
+    .content-area,
+    .artifact-card,
+    .stats-card,
+    .search-controls,
+    .form-control,
+    .list-group-item,
+    .modal-content {
+      transition: all 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -191,6 +313,9 @@
             <li><a class="dropdown-item" href="#" id="user-logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
           </ul>
         </div>
+        <button id="theme-toggle" class="btn btn-outline-light ms-2" title="Toggle Dark Mode">
+          <i class="fas fa-moon"></i>
+        </button>
       </div>
     </div>
   </nav>
@@ -208,7 +333,7 @@
         <h6 class="text-uppercase text-muted small mb-3">Quick Stats</h6>
         <div class="card stats-card text-center p-3 mb-3">
           <i class="fas fa-eye fa-2x mb-2"></i>
-          <h5>5</h5>
+          <h5 id="mobile-total-artifacts">5</h5>
           <p class="mb-0 small">Available Artifacts</p>
         </div>
         <div class="card stats-card text-center p-3 mb-3">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Arargasaurus - Museum AR Experience</title>
+  <title>Oviraptor - Museum AR Experience</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -88,82 +88,6 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       color: white;
     }
-    
-    /* Dark Mode Styles */
-    body.dark-mode {
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-      color: #e0e0e0;
-    }
-    
-    .dark-mode .main-header {
-      background: rgba(0, 0, 0, 0.8);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .dark-mode .content-area {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .dark-mode .artifact-card {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .dark-mode .artifact-card:hover {
-      background: rgba(0, 0, 0, 0.7);
-      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
-    }
-    
-    .dark-mode .artifact-description {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .dark-mode .qr-container {
-      background: rgba(20, 20, 20, 0.9);
-      color: #e0e0e0;
-    }
-    
-    .dark-mode .btn-outline-light {
-      border-color: rgba(255, 255, 255, 0.5);
-      color: rgba(255, 255, 255, 0.8);
-    }
-    
-    .dark-mode .btn-outline-light:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.7);
-      color: #fff;
-    }
-    
-    /* Theme toggle button specific styles */
-    #theme-toggle {
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    #theme-toggle:hover {
-      transform: scale(1.05);
-    }
-    
-    .dark-mode #theme-toggle {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Smooth transitions for theme changes */
-    body {
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    
-    .main-header,
-    .content-area,
-    .artifact-card,
-    .artifact-description,
-    .qr-container {
-      transition: background 0.3s ease, border-color 0.3s ease;
-    }
   </style>
 </head>
 <body>
@@ -198,7 +122,7 @@
           <i class="fas fa-qrcode me-2"></i>QR Code Access
         </h6>
         <div class="qr-container">
-          <img src="Arargasaurus_QR.png" alt="Arargasaurus QR Code" class="img-fluid mb-2" style="max-width: 150px;">
+          <img src="Oviraptor_QR.png" alt="Oviraptor QR Code" class="img-fluid mb-2" style="max-width: 150px;">
           <p class="small mb-0">Scan to access this exhibit</p>
         </div>
       </div>
@@ -214,16 +138,13 @@
             <img src="../assets/museum-logo.png" alt="Museum Logo" class="me-3" style="height: 40px;">
             <div>
               <h5 class="mb-0">Museum AR Experience</h5>
-              <small class="text-white-50">Arargasaurus Discovery</small>
+              <small class="text-white-50">Oviraptor Discovery</small>
             </div>
           </div>
         </div>
         <div class="col-md-6 text-end">
-          <button class="btn btn-outline-light me-2" data-bs-toggle="offcanvas" data-bs-target="#settingsPanel">
+          <button class="btn btn-outline-light me-3" data-bs-toggle="offcanvas" data-bs-target="#settingsPanel">
             <i class="fas fa-cog me-2"></i>Settings
-          </button>
-          <button id="theme-toggle" class="btn btn-outline-light me-2" title="Toggle Dark Mode">
-            <i class="fas fa-moon"></i>
           </button>
           <a href="../index.html" class="btn btn-outline-light">
             <i class="fas fa-home me-2"></i>Back to Gallery
@@ -240,24 +161,24 @@
         <div class="artifact-card card h-100">
           <div class="card-header">
             <h3 class="mb-0 text-white">
-              <i class="fas fa-fish me-2"></i>Arargasaurus
+              <i class="fas fa-egg me-2"></i>Oviraptor
             </h3>
-            <small class="text-white-75">Ancient Marine Reptile</small>
+            <small class="text-white-75">The Misunderstood Dinosaur</small>
           </div>
           <div class="card-body">
             <div class="artifact-description mb-4">
               <h5 class="text-white mb-3">
-                <i class="fas fa-info-circle me-2"></i>Discover the Arargasaurus
+                <i class="fas fa-info-circle me-2"></i>Discover the Oviraptor
               </h5>
-              <p class="text-white-75 mb-0" id="arargasaurus-desc">
-                Explore Arargasaurus, a fascinating marine reptile from the Mesozoic era. This ancient creature lived in the oceans millions of years ago, showcasing unique adaptations for aquatic life. Through augmented reality, examine its streamlined body, powerful flippers, and specialized features that made it a successful predator in prehistoric seas. Discover how this remarkable species fits into the evolutionary history of marine reptiles.
+              <p class="text-white-75 mb-0" id="oviraptor-desc">
+                Meet Oviraptor, whose name means "egg thief," though recent discoveries reveal this dinosaur was actually a devoted parent protecting its own eggs. Living during the Late Cretaceous period, approximately 75 million years ago, Oviraptor was a bird-like dinosaur with a distinctive crest and beak. Through augmented reality, explore its unique features, nesting behaviors, and the fascinating story of how paleontologists discovered the truth about this misunderstood dinosaur's caring nature.
               </p>
             </div>
             
             <div class="text-center">
-              <button id="main-text-2-speech" class="btn btn-speech btn-lg px-4 py-3">
-                <i class="fas fa-play me-2"></i>
-                Play Audio Description
+              <button class="btn btn-ar btn-lg px-4 py-3">
+                <i class="fas fa-cube me-2"></i>
+                Launch AR Experience
               </button>
             </div>
           </div>
@@ -273,7 +194,7 @@
           </div>
           <div class="card-body text-center">
             <div class="qr-container mb-3">
-              <img src="Arargasaurus_QR.png" alt="Arargasaurus QR Code" class="img-fluid" style="max-width: 200px;">
+              <img src="Oviraptor_QR.png" alt="Oviraptor QR Code" class="img-fluid" style="max-width: 200px;">
               <p class="small mb-0 mt-2">Scan for instant AR access</p>
             </div>
           </div>
@@ -285,16 +206,11 @@
   <script>
     let currentAudio = null;
     
-    // Function to handle text-to-speech functionality
-    async function playTextToSpeech(buttonId, isMainButton = false) {
-      const button = document.getElementById(buttonId);
+    document.getElementById('text-2-speech').addEventListener('click', async () => {
+      const button = document.getElementById('text-2-speech');
       const stopButton = document.getElementById('stopButton');
-      const descElem = document.getElementById('arargasaurus-desc');
+      const descElem = document.getElementById('oviraptor-desc');
       const originalDesc = descElem.textContent;
-      
-      const originalButtonText = isMainButton ? 
-        '<i class="fas fa-play me-2"></i>Play Audio Description' : 
-        '<i class="fas fa-play me-2"></i>Play Description';
 
       try {
         button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
@@ -313,88 +229,41 @@
           currentAudio = new Audio('data:audio/mp3;base64,' + data.audioContent);
           
           currentAudio.onended = () => {
-            button.innerHTML = originalButtonText;
+            button.innerHTML = '<i class="fas fa-play me-2"></i>Play Description';
             button.disabled = false;
-            if (stopButton) stopButton.style.display = 'none';
+            stopButton.style.display = 'none';
             currentAudio = null;
           };
           
           currentAudio.play();
           button.innerHTML = '<i class="fas fa-volume-up me-2"></i>Playing...';
-          if (stopButton) stopButton.style.display = 'block';
+          stopButton.style.display = 'block';
         } else {
           alert('Failed to synthesize speech: ' + (data.error || 'Unknown error.'));
-          button.innerHTML = originalButtonText;
+          button.innerHTML = '<i class="fas fa-play me-2"></i>Play Description';
           button.disabled = false;
         }
       } catch (err) {
         alert('Error connecting to AI server.');
-        button.innerHTML = originalButtonText;
+        button.innerHTML = '<i class="fas fa-play me-2"></i>Play Description';
         button.disabled = false;
       }
-    }
-    
-    // Settings panel text-to-speech button
-    document.getElementById('text-2-speech').addEventListener('click', () => {
-      playTextToSpeech('text-2-speech', false);
     });
     
-    // Main text-to-speech button
-    document.getElementById('main-text-2-speech').addEventListener('click', () => {
-      playTextToSpeech('main-text-2-speech', true);
-    });
-    
-    // Stop button functionality
     document.getElementById('stopButton').addEventListener('click', () => {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
         
-        const settingsButton = document.getElementById('text-2-speech');
-        const mainButton = document.getElementById('main-text-2-speech');
+        const button = document.getElementById('text-2-speech');
         const stopButton = document.getElementById('stopButton');
         
-        settingsButton.innerHTML = '<i class="fas fa-play me-2"></i>Play Description';
-        settingsButton.disabled = false;
-        mainButton.innerHTML = '<i class="fas fa-play me-2"></i>Play Audio Description';
-        mainButton.disabled = false;
+        button.innerHTML = '<i class="fas fa-play me-2"></i>Play Description';
+        button.disabled = false;
         stopButton.style.display = 'none';
       }
     });
-    
-    // Dark mode functionality
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    themeToggleBtn?.addEventListener('click', function() {
-      document.body.classList.toggle('dark-mode');
-      updateThemeButton();
-      
-      // Save preference
-      if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('theme', 'dark');
-      } else {
-        localStorage.setItem('theme', 'light');
-      }
-    });
-
-    // Function to update theme button appearance
-    function updateThemeButton() {
-      if (!themeToggleBtn) return;
-      
-      if (document.body.classList.contains('dark-mode')) {
-        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-        themeToggleBtn.title = 'Switch to Light Mode';
-      } else {
-        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-        themeToggleBtn.title = 'Switch to Dark Mode';
-      }
-    }
-
-    // On load, apply saved theme
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark-mode');
-    }
-    updateThemeButton();
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -405,9 +274,9 @@
   <script type="module">
     import { isArtifactEnabled } from '../artifacts.js';
     
-    // Check if Arargasaurus artifact is enabled
+    // Check if Oviraptor artifact is enabled
     async function checkArtifactAccess() {
-      const isEnabled = await isArtifactEnabled('arargasaurus');
+      const isEnabled = await isArtifactEnabled('oviraptor');
       
       if (!isEnabled) {
         // Redirect to main page with message

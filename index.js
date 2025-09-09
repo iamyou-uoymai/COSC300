@@ -535,19 +535,32 @@ document.addEventListener('DOMContentLoaded', function() {
   const themeToggleBtn = document.getElementById('theme-toggle');
   themeToggleBtn?.addEventListener('click', function() {
     document.body.classList.toggle('dark-mode');
-    // Optionally, save preference
+    updateThemeButton();
+    
+    // Save preference
     if (document.body.classList.contains('dark-mode')) {
       localStorage.setItem('theme', 'dark');
-      themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
     } else {
       localStorage.setItem('theme', 'light');
-      themeToggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
     }
   });
+
+  // Function to update theme button appearance
+  function updateThemeButton() {
+    if (!themeToggleBtn) return;
+    
+    if (document.body.classList.contains('dark-mode')) {
+      themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+      themeToggleBtn.title = 'Switch to Light Mode';
+    } else {
+      themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+      themeToggleBtn.title = 'Switch to Dark Mode';
+    }
+  }
 
   // On load, apply saved theme
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
-    if (themeToggleBtn) themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
   }
+  updateThemeButton();
 });

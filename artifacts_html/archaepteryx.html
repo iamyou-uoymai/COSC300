@@ -3,107 +3,370 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>COSC300</title>
+  <title>Archaepteryx - Museum AR Experience</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
+  
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      color: white;
+    }
+    
+    .main-header {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1050;
+    }
+    
+    .content-area {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      margin: 20px;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .artifact-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .artifact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn-ar {
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      border: none;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-ar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+    
+    .qr-container {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      color: #333;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .artifact-description {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-speech {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border: none;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-speech:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: #e0e0e0;
+    }
+    
+    .dark-mode .main-header {
+      background: rgba(0, 0, 0, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark-mode .content-area {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark-mode .artifact-card {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .dark-mode .artifact-card:hover {
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    }
+    
+    .dark-mode .artifact-description {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .dark-mode .qr-container {
+      background: rgba(20, 20, 20, 0.9);
+      color: #e0e0e0;
+    }
+    
+    .dark-mode .btn-outline-light {
+      border-color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .dark-mode .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.7);
+      color: #fff;
+    }
+    
+    /* Theme toggle button specific styles */
+    #theme-toggle {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #theme-toggle:hover {
+      transform: scale(1.05);
+    }
+    
+    .dark-mode #theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Smooth transitions for theme changes */
+    body {
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    .main-header,
+    .content-area,
+    .artifact-card,
+    .artifact-description,
+    .qr-container {
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Side Bar -->
-  <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">User Details</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  <!-- Settings Panel -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsPanel"
+    aria-labelledby="settingsPanelLabel">
+    <div class="offcanvas-header" style="background: rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
+      <h5 class="offcanvas-title text-white" id="settingsPanelLabel">
+        <i class="fas fa-cog me-2"></i>AR Settings
+      </h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+        aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body d-flex flex-column justify-content-between h-100">
-      <div class="mb-4 text-center">
-        <img id="user-avatar" src="https://ui-avatars.com/api/?name=User" alt="User Avatar" class="rounded-circle mb-2" width="80" height="80">
-        <h6 id="user-fullname" class="mb-1">John Doe</h6>
-        <p id="user-email" class="text-muted small mb-0">johndoe@email.com</p>
+    <div class="offcanvas-body" style="background: rgba(0,0,0,0.1); backdrop-filter: blur(10px);">
+      <div class="mb-4">
+        <h6 class="text-white mb-3">
+          <i class="bi bi-volume-up me-2"></i>Audio Controls
+        </h6>
+        <div class="mb-3">
+          <button id="text-2-speech" class="btn btn-speech w-100 mb-2">
+            <i class="fas fa-play me-2"></i>Play Description
+          </button>
+          <button id="stopButton" class="btn btn-outline-light w-100" style="display: none;">
+            <i class="fas fa-stop me-2"></i>Stop Audio
+          </button>
+        </div>
       </div>
-      <div class="mt-auto text-center pb-3">
-        <button id="log-out-button" type="button" class="btn btn-danger w-75">Log Out</button>
+      
+      <div class="mb-4">
+        <h6 class="text-white mb-3">
+          <i class="fas fa-qrcode me-2"></i>QR Code Access
+        </h6>
+        <div class="qr-container">
+          <img src="Archaepteryx_QR.png" alt="Archaepteryx QR Code" class="img-fluid mb-2" style="max-width: 150px;">
+          <p class="small mb-0">Scan to access this exhibit</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <!-- Modern Header -->
+  <header class="main-header py-3">
     <div class="container-fluid">
-      <a class="navbar-brand nav-head" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Museum AR</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" id="home-btn" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Exhibits</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-          <div class="buttons d-flex mt-2">
-            <li><button id="settings-btn" class="btn btn-sm btn-light"><i class="bi bi-gear"></i> Settings</button></li>
-            <li><button id="theme-toggle" class="btn btn-sm btn-light ms-1"><i class="bi bi-moon-fill"></i> Dark Mode</button></li>
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center">
+            <img src="../assets/museum-logo.png" alt="Museum Logo" class="me-3" style="height: 40px;">
+            <div>
+              <h5 class="mb-0">Museum AR Experience</h5>
+              <small class="text-white-50">Archaepteryx Discovery</small>
+            </div>
           </div>
-        </ul>
+        </div>
+        <div class="col-md-6 text-end">
+          <button class="btn btn-outline-light me-2" data-bs-toggle="offcanvas" data-bs-target="#settingsPanel">
+            <i class="fas fa-cog me-2"></i>Settings
+          </button>
+          <button id="theme-toggle" class="btn btn-outline-light me-2" title="Toggle Theme">
+            <i class="fas fa-moon"></i>
+          </button>
+          <a href="../index.html" class="btn btn-outline-light">
+            <i class="fas fa-home me-2"></i>Back to Gallery
+          </a>
+        </div>
       </div>
     </div>
-  </nav>
+  </header>
 
-  <div id="settings-panel" class="container mt-3 d-none">
-    <div class="card">
-      <div class="card-header bg-light">
-        <h5 class="mb-0">AR Settings</h5>
+  <!-- Main Content -->
+  <div class="content-area">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="artifact-card card h-100">
+          <div class="card-header">
+            <h3 class="mb-0 text-white">
+              <i class="fas fa-dove me-2"></i>Archaepteryx
+            </h3>
+            <small class="text-white-75">The First Bird</small>
+          </div>
+          <div class="card-body">
+            <div class="artifact-description mb-4">
+              <h5 class="text-white mb-3">
+                <i class="fas fa-info-circle me-2"></i>Discover the Archaepteryx
+              </h5>
+              <p class="text-white-75 mb-0" id="archaepteryx-desc">
+                Encounter Archaepteryx lithographica, a transitional fossil between non-avian dinosaurs and birds, from the Late Jurassic period, approximately 150 million years ago. Discovered in present-day Germany, this feathered dinosaur provides crucial insights into the evolution of flight. Through augmented reality, examine its skeletal structure, feather arrangement, and likely behavior as it appears within your own environment. Rotate, scale, and observe the specimen to appreciate its significance in the tree of life.
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <button id="main-text-2-speech" class="btn btn-speech btn-lg px-4 py-3">
+                <i class="fas fa-play me-2"></i>
+                Play Audio Description
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <form>
-          <div class="mb-3">
-            <label class="form-label">Language</label>
-            <select class="form-select">
-              <option>English</option>
-              <option>Spanish</option>
-              <option>French</option>
-            </select>
+      
+      <div class="col-lg-4">
+        <div class="artifact-card card h-100">
+          <div class="card-header">
+            <h5 class="mb-0 text-white">
+              <i class="fas fa-qrcode me-2"></i>Quick Access
+            </h5>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Text Size</label>
-            <input type="range" class="form-range" min="12" max="24" step="2">
+          <div class="card-body text-center">
+            <div class="qr-container mb-3">
+              <img src="Archaepteryx_QR.png" alt="Archaepteryx QR Code" class="img-fluid" style="max-width: 200px;">
+              <p class="small mb-0 mt-2">Scan for instant AR access</p>
+            </div>
           </div>
-          <div class="form-check form-switch mb-3">
-            <input class="form-check-input" type="checkbox" id="audio-toggle">
-            <label class="form-check-label" for="audio-toggle">Enable Audio Guides</label>
-          </div>
-          <button type="button" class="btn btn-sm btn-primary">Save</button>
-        </form>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Header and Search -->
-  <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h1 class="h3">Museum Artifacts</h1>
-      <input id="search-bar" type="text" class="form-control w-50" placeholder="Search artifacts...">
-    </div>
+  <script>
+    let currentAudio = null;
+    
+    // Function to handle text-to-speech functionality
+    async function playTextToSpeech(buttonId, isMainButton = false) {
+      const button = document.getElementById(buttonId);
+      const stopButton = document.getElementById('stopButton');
+      const descElem = document.getElementById('archaepteryx-desc');
+      const originalDesc = descElem.textContent;
+      
+      const originalButtonText = isMainButton ? 
+        '<i class="fas fa-play me-2"></i>Play Audio Description' : 
+        '<i class="fas fa-play me-2"></i>Play Description';
 
-    <!-- Archaepteryx QR Section -->
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Archaepteryx QR Code</h5>
-      </div>
-      <div class="card-body text-center">
-        <img src="Archaepteryx_QR.png" alt="Archaepteryx QR Code" class="card-img-top" style="max-width: 350px; width: 100%; height: auto;">
-        <p class="mt-2" id="arachaepteryx-desc">
-          Archaepteryx in Augmented Reality
-          Encounter Archaepteryx lithographica, a transitional fossil between non-avian dinosaurs and birds, from the Late Jurassic period, approximately 150 million years ago. Discovered in present-day Germany, this feathered dinosaur provides crucial insights into the evolution of flight. Through augmented reality, examine its skeletal structure, feather arrangement, and likely behavior as it appears within your own environment. Rotate, scale, and observe the specimen to appreciate its significance in the tree of life.
-        </p>
-        <button id="text-2-speech" class="btn btn-secondary mt-2">Text-to-Speech</button>
-      </div>
-    </div>
-  </div>
+      try {
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+        button.disabled = true;
+        
+        // Call your backend TTS endpoint (which uses OAuth 2.0 credentials)
+        const response = await fetch('http://localhost:3000/api/text-to-speech', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: originalDesc })
+        });
+
+        const data = await response.json();
+        if (data.audioContent) {
+          // Play the base64-encoded MP3 audio returned by the backend
+          currentAudio = new Audio('data:audio/mp3;base64,' + data.audioContent);
+          
+          currentAudio.onended = () => {
+            button.innerHTML = originalButtonText;
+            button.disabled = false;
+            if (stopButton) stopButton.style.display = 'none';
+            currentAudio = null;
+          };
+          
+          currentAudio.play();
+          button.innerHTML = '<i class="fas fa-volume-up me-2"></i>Playing...';
+          if (stopButton) stopButton.style.display = 'block';
+        } else {
+          alert('Failed to synthesize speech: ' + (data.error || 'Unknown error.'));
+          button.innerHTML = originalButtonText;
+          button.disabled = false;
+        }
+      } catch (err) {
+        alert('Error connecting to AI server.');
+        button.innerHTML = originalButtonText;
+        button.disabled = false;
+      }
+    }
+    
+    // Settings panel text-to-speech button
+    document.getElementById('text-2-speech').addEventListener('click', () => {
+      playTextToSpeech('text-2-speech', false);
+    });
+    
+    // Main text-to-speech button
+    document.getElementById('main-text-2-speech').addEventListener('click', () => {
+      playTextToSpeech('main-text-2-speech', true);
+    });
+    
+    // Stop button functionality
+    document.getElementById('stopButton').addEventListener('click', () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+        
+        const settingsButton = document.getElementById('text-2-speech');
+        const mainButton = document.getElementById('main-text-2-speech');
+        const stopButton = document.getElementById('stopButton');
+        
+        settingsButton.innerHTML = '<i class="fas fa-play me-2"></i>Play Description';
+        settingsButton.disabled = false;
+        mainButton.innerHTML = '<i class="fas fa-play me-2"></i>Play Audio Description';
+        mainButton.disabled = false;
+        stopButton.style.display = 'none';
+      }
+    });
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
-  <script type="module" src="qr.js"></script>
+  <script src="../script.js"></script>
   
   <!-- Artifact Access Control -->
   <script type="module">
@@ -122,6 +385,43 @@
     
     // Check access when page loads
     checkArtifactAccess();
+    
+    // Dark Mode Functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    
+    // Function to update theme toggle button
+    function updateThemeButton() {
+      const isDark = body.classList.contains('dark-mode');
+      const icon = themeToggle.querySelector('i');
+      
+      if (isDark) {
+        icon.className = 'fas fa-sun';
+        themeToggle.title = 'Switch to Light Mode';
+      } else {
+        icon.className = 'fas fa-moon';
+        themeToggle.title = 'Switch to Dark Mode';
+      }
+    }
+    
+    // Apply saved theme on page load
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark-mode');
+    }
+    updateThemeButton();
+    
+    // Theme toggle event listener
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      const isDark = body.classList.contains('dark-mode');
+      
+      // Save theme preference
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      
+      // Update button
+      updateThemeButton();
+    });
   </script>
 </body>
 </html>
