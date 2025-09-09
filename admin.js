@@ -1,5 +1,6 @@
-import { auth } from './app.js';
+import { auth, db } from './app.js';
 import { onAuthStateChanged, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Check if current user is admin
 function isAdmin(user) {
@@ -152,57 +153,107 @@ function loadRecentActivity() {
   `).join('');
 }
 
-function loadUsersData() {
-  // Mock user data - in production, this would come from a database
-  const mockUsers = [
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john.doe@email.com',
-      role: 'user',
-      status: 'active',
-      lastLogin: '2024-01-15',
-      avatar: 'https://ui-avatars.com/api/?name=John+Doe'
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane.smith@email.com',
-      role: 'user',
-      status: 'inactive',
-      lastLogin: '2024-01-10',
-      avatar: 'https://ui-avatars.com/api/?name=Jane+Smith'
-    },
-    {
-      id: '3',
-      name: 'Admin User',
-      email: 'admin@ul.ac.za',
-      role: 'admin',
-      status: 'active',
-      lastLogin: '2024-01-16',
-      avatar: 'https://ui-avatars.com/api/?name=Admin+User'
-    }
-  ];
-
+async function loadUsersData() {
   const tbody = document.getElementById('users-table-body');
-  tbody.innerHTML = mockUsers.map(user => `
+  
+  // Show loading state
+  tbody.innerHTML = `
     <tr>
-      <td><img src="${user.avatar}" alt="${user.name}" class="rounded-circle" width="40" height="40"></td>
-      <td>${user.name}</td>
-      <td>${user.email}</td>
-      <td><span class="badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'}">${user.role}</span></td>
-      <td><span class="badge ${user.status === 'active' ? 'bg-success' : 'bg-secondary'}">${user.status}</span></td>
-      <td>${user.lastLogin}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-light me-1" onclick="editUser('${user.id}')">
-          <i class="fas fa-edit"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${user.id}')">
-          <i class="fas fa-trash"></i>
-        </button>
+      <td colspan="7" class="text-center">
+        <div class="spinner-border text-light" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading users...</p>
       </td>
     </tr>
-  `).join('');
+  `;
+
+  try {
+    // Get users from Firestore
+    const usersQuery = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(usersQuery);
+    
+    const users = [];
+    querySnapshot.forEach((doc) => {
+      const userData = doc.data();
+      users.push({
+        id: doc.id,
+        name: userData.displayName || userData.name || 'No Name',
+        email: userData.email || 'No Email',
+        role: userData.role || 'user',
+        status: userData.emailVerified ? 'active' : 'inactive',
+        lastLogin: userData.lastLoginAt ? new Date(userData.lastLoginAt.toDate()).toLocaleDateString() : 'Never',
+        createdAt: userData.createdAt ? new Date(userData.createdAt.toDate()).toLocaleDateString() : 'Unknown',
+        avatar: userData.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.displayName || userData.name || 'User')}`,
+        emailVerified: userData.emailVerified || false
+      });
+    });
+
+    // If no users found, show empty state
+    if (users.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center text-muted">
+            <i class="fas fa-users fa-3x mb-3"></i>
+            <p>No users found in the database.</p>
+            <p>Users will appear here when they register.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Display users
+    tbody.innerHTML = users.map(user => `
+      <tr>
+        <td><img src="${user.avatar}" alt="${user.name}" class="rounded-circle" width="40" height="40"></td>
+        <td>
+          <div>${user.name}</div>
+          <small class="text-muted">Joined: ${user.createdAt}</small>
+        </td>
+        <td>
+          <div>${user.email}</div>
+          <small class="text-muted">
+            <i class="fas fa-${user.emailVerified ? 'check-circle text-success' : 'exclamation-circle text-warning'}"></i>
+            ${user.emailVerified ? 'Verified' : 'Unverified'}
+          </small>
+        </td>
+        <td><span class="badge ${isAdmin({email: user.email}) ? 'bg-danger' : 'bg-primary'}">${isAdmin({email: user.email}) ? 'admin' : 'user'}</span></td>
+        <td><span class="badge ${user.emailVerified ? 'bg-success' : 'bg-warning'}">${user.emailVerified ? 'active' : 'pending'}</span></td>
+        <td>${user.lastLogin}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-light me-1" onclick="editUser('${user.id}')" title="Edit User">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${user.id}')" title="Delete User">
+            <i class="fas fa-trash"></i>
+          </button>
+          ${!user.emailVerified ? `
+            <button class="btn btn-sm btn-outline-warning" onclick="resendVerification('${user.id}')" title="Resend Verification">
+              <i class="fas fa-envelope"></i>
+            </button>
+          ` : ''}
+        </td>
+      </tr>
+    `).join('');
+
+    // Update user count in dashboard
+    document.getElementById('total-users').textContent = users.length;
+
+  } catch (error) {
+    console.error('Error loading users:', error);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center text-danger">
+          <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+          <p>Error loading users: ${error.message}</p>
+          <button class="btn btn-outline-light btn-sm" onclick="loadUsersData()">
+            <i class="fas fa-refresh me-1"></i>Try Again
+          </button>
+        </td>
+      </tr>
+    `;
+  }
 }
 
 function loadARContentData() {
@@ -299,6 +350,12 @@ async function handleCreateUser(e) {
     return;
   }
 
+  // Show loading state
+  const createBtn = document.getElementById('create-user-btn');
+  const originalText = createBtn.innerHTML;
+  createBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+  createBtn.disabled = true;
+
   try {
     // Create user account
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -307,14 +364,27 @@ async function handleCreateUser(e) {
     // Update user profile
     await updateProfile(user, { displayName: name });
 
+    // Save additional user data to Firestore
+    await setDoc(doc(db, 'users', user.uid), {
+      displayName: name,
+      email: email,
+      role: role,
+      emailVerified: false,
+      createdAt: new Date(),
+      createdBy: auth.currentUser.uid,
+      status: 'pending'
+    });
+
     // Send verification email
-    await sendEmailVerification(user);
+    await sendEmailVerification(user, {
+      url: window.location.origin + '/index.html',
+      handleCodeInApp: true
+    });
 
     // Sign out the newly created user so admin stays logged in
     await auth.signOut();
     
-    // Re-authenticate admin (you might want to implement this differently)
-    alert('User created successfully! Verification email sent.');
+    alert('User created successfully! Verification email sent to ' + email);
     
     // Close modal and refresh users list
     bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
@@ -324,6 +394,10 @@ async function handleCreateUser(e) {
   } catch (error) {
     console.error('Error creating user:', error);
     alert('Error creating user: ' + error.message);
+  } finally {
+    // Reset button state
+    createBtn.innerHTML = originalText;
+    createBtn.disabled = false;
   }
 }
 
@@ -372,10 +446,29 @@ window.editUser = function(userId) {
   alert(`Edit user functionality would be implemented for user ID: ${userId}`);
 };
 
-window.deleteUser = function(userId) {
-  if (confirm('Are you sure you want to delete this user?')) {
-    alert(`Delete user functionality would be implemented for user ID: ${userId}`);
-    loadUsersData(); // Refresh the table
+window.deleteUser = async function(userId) {
+  if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+    try {
+      // Delete user document from Firestore
+      await deleteDoc(doc(db, 'users', userId));
+      
+      alert('User deleted successfully from database.');
+      loadUsersData(); // Refresh the table
+      
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Error deleting user: ' + error.message);
+    }
+  }
+};
+
+window.resendVerification = async function(userId) {
+  try {
+    // In a real implementation, you would need to handle this differently
+    // since you can't send verification emails for other users directly
+    alert('Verification email resend functionality would require server-side implementation.');
+  } catch (error) {
+    console.error('Error resending verification:', error);
   }
 };
 

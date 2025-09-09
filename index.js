@@ -1,5 +1,6 @@
-import { auth } from './app.js';
+import { auth, db } from './app.js';
 import { onAuthStateChanged, applyActionCode } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 if (!sessionStorage.getItem('visited')) {
   window.location.href = 'login.html';
@@ -74,6 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
         ? user.photoURL 
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
       
+      // Update last login time in Firestore
+      updateDoc(doc(db, 'users', user.uid), {
+        lastLoginAt: new Date()
+      }).catch(error => {
+        console.log('Note: Could not update last login time:', error.message);
+      });
+      
       // Check if user is admin and show admin link
       checkAdminAccess(user);
     } else {
@@ -127,6 +135,16 @@ async function handleEmailVerification() {
     try {
       // Apply the email verification code
       await applyActionCode(auth, oobCode);
+      
+      // Update user verification status in Firestore
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          emailVerified: true,
+          status: 'active',
+          verifiedAt: new Date()
+        });
+      }
       
       // Show success message
       showVerificationSuccessModal();

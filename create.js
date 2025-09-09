@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {auth, app} from "./app.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {auth, app, db} from "./app.js";
 
 class Register {
     constructor() {
@@ -65,8 +66,22 @@ class Register {
                 // Update the user's profile with their name
                 await updateProfile(user, { displayName: this.$RegisterName });
 
+                // Save user data to Firestore
+                await setDoc(doc(db, 'users', user.uid), {
+                    displayName: this.$RegisterName,
+                    email: this.$RegisterEmail,
+                    emailVerified: false,
+                    role: 'user',
+                    createdAt: new Date(),
+                    status: 'pending',
+                    registrationMethod: 'email'
+                });
+
                 // Send email verification
-                await sendEmailVerification(user);
+                await sendEmailVerification(user, {
+                    url: window.location.origin + '/index.html',
+                    handleCodeInApp: true
+                });
 
                 alert("Your account has been created successfully! Please check your email to verify your account.");
                 window.location.href = "login.html"; // Redirect to the login page
@@ -89,6 +104,19 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
+        
+        // Save user data to Firestore (using merge to avoid overwriting existing data)
+        await setDoc(doc(db, 'users', user.uid), {
+          displayName: user.displayName,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          photoURL: user.photoURL,
+          role: 'user',
+          createdAt: new Date(),
+          status: user.emailVerified ? 'active' : 'pending',
+          registrationMethod: 'google'
+        }, { merge: true });
+        
         alert('Google sign-up successful!');
         window.location.href = 'login.html';
       } catch (error) {
