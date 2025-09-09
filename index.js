@@ -1,11 +1,14 @@
 import { auth } from './app.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged, applyActionCode } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 if (!sessionStorage.getItem('visited')) {
   window.location.href = 'login.html';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Handle email verification link
+  handleEmailVerification();
+
   // Button redirects
   const arargasaurusBtn = document.getElementById('arargasaurus');
   if (arargasaurusBtn) {
@@ -53,6 +56,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // User details in sidebar
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      // Check if email is verified before allowing access
+      if (!user.emailVerified) {
+        // Sign out unverified user and redirect to login
+        auth.signOut().then(() => {
+          sessionStorage.removeItem('visited');
+          alert('Please verify your email address before accessing the Museum AR experience.');
+          window.location.href = "login.html";
+        });
+        return;
+      }
+      
+      // User is verified, show their details
       document.getElementById('user-fullname').textContent = user.displayName || "No Name";
       document.getElementById('user-email').textContent = user.email || "";
       document.getElementById('user-avatar').src = user.photoURL 
@@ -98,3 +113,115 @@ document.addEventListener('DOMContentLoaded', function() {
     if (themeToggleBtn) themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
   }
 });
+
+// Function to handle email verification links
+async function handleEmailVerification() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const mode = urlParams.get('mode');
+  const oobCode = urlParams.get('oobCode');
+  
+  if (mode === 'verifyEmail' && oobCode) {
+    try {
+      // Apply the email verification code
+      await applyActionCode(auth, oobCode);
+      
+      // Show success message
+      showVerificationSuccessModal();
+      
+      // Clear the URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+      
+    } catch (error) {
+      console.error('Error verifying email:', error);
+      showVerificationErrorModal(error.message);
+    }
+  }
+}
+
+// Function to show verification success modal
+function showVerificationSuccessModal() {
+  const modalHTML = `
+    <div class="modal fade" id="verification-success-modal" tabindex="-1" aria-labelledby="verificationSuccessLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="verificationSuccessLabel">
+              <i class="fas fa-check-circle me-2"></i>Email Verified Successfully!
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="mb-3">
+              <i class="fas fa-shield-check text-success" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="text-success mb-3">Welcome to Museum AR!</h4>
+            <p class="mb-3">Your email has been successfully verified. You now have full access to the Museum Augmented Reality experience.</p>
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              You can now explore all dinosaur exhibits and enjoy the AR features!
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+              <i class="fas fa-rocket me-2"></i>Start Exploring
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  const modal = new bootstrap.Modal(document.getElementById('verification-success-modal'));
+  modal.show();
+  
+  // Remove modal from DOM after it's closed
+  document.getElementById('verification-success-modal').addEventListener('hidden.bs.modal', function() {
+    this.remove();
+  });
+}
+
+// Function to show verification error modal
+function showVerificationErrorModal(errorMessage) {
+  const modalHTML = `
+    <div class="modal fade" id="verification-error-modal" tabindex="-1" aria-labelledby="verificationErrorLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="verificationErrorLabel">
+              <i class="fas fa-exclamation-triangle me-2"></i>Verification Failed
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="mb-3">
+              <i class="fas fa-times-circle text-danger" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="text-danger mb-3">Verification Link Invalid</h4>
+            <p class="mb-3">The verification link may have expired or already been used.</p>
+            <div class="alert alert-warning">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>What to do:</strong> Please try logging in again. If your email is not verified, 
+              you'll be given an option to resend the verification email.
+            </div>
+            <p class="text-muted small">Error: ${errorMessage}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="window.location.href='login.html'">
+              <i class="fas fa-sign-in-alt me-2"></i>Go to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  const modal = new bootstrap.Modal(document.getElementById('verification-error-modal'));
+  modal.show();
+  
+  // Remove modal from DOM after it's closed
+  document.getElementById('verification-error-modal').addEventListener('hidden.bs.modal', function() {
+    this.remove();
+  });
+}
