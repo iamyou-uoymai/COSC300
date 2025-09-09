@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { GoogleAuth } = require('google-auth-library');
 const app = express();
@@ -11,6 +12,9 @@ const CREDENTIALS_PATH = '/home/iamyou/Documents/gen-lang-client-0856632337-ddf6
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve static files from the current directory
+app.use(express.static(__dirname));
 
 // Function to get OAuth 2.0 access token
 async function getAccessToken() {
@@ -63,7 +67,15 @@ app.post('/api/text-to-speech', async (req, res) => {
   }
 });
 
+// Default route - redirect to login
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
+  console.log(`Frontend available at http://localhost:${PORT}`);
+  console.log(`Login page: http://localhost:${PORT}/login.html`);
+  console.log(`Admin panel: http://localhost:${PORT}/admin.html`);
 });
 

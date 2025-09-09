@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('user-avatar').src = user.photoURL 
         ? user.photoURL 
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
+      
+      // Check if user is admin and show admin link
+      checkAdminAccess(user);
     } else {
       // If not signed in, redirect to login
       window.location.href = "login.html";
@@ -224,4 +227,41 @@ function showVerificationErrorModal(errorMessage) {
   document.getElementById('verification-error-modal').addEventListener('hidden.bs.modal', function() {
     this.remove();
   });
+}
+
+// Check if user has admin access
+function checkAdminAccess(user) {
+  const ADMIN_DOMAINS = [
+    'myturf.ul.ac.za',
+    'ul.ac.za'
+  ];
+  
+  const userEmail = user.email.toLowerCase();
+  
+  // Check admin domains
+  const emailDomain = userEmail.split('@')[1];
+  if (emailDomain && ADMIN_DOMAINS.includes(emailDomain)) {
+    showAdminLink();
+  }
+}
+
+// Show admin link in the user interface
+function showAdminLink() {
+  const offcanvasBody = document.querySelector('.offcanvas-body');
+  if (offcanvasBody) {
+    // Check if admin link already exists
+    if (!document.getElementById('admin-link')) {
+      const adminLinkHTML = `
+        <div class="mt-3 text-center">
+          <a href="admin.html" id="admin-link" class="btn btn-outline-warning btn-sm">
+            <i class="fas fa-shield-alt me-2"></i>Admin Panel
+          </a>
+        </div>
+      `;
+      
+      // Insert before the logout button
+      const logoutSection = offcanvasBody.querySelector('.mt-auto');
+      logoutSection.insertAdjacentHTML('beforebegin', adminLinkHTML);
+    }
+  }
 }
