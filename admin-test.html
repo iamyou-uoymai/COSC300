@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Test - Museum AR</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-4">
+    <h1>Admin Buttons Test</h1>
+    
+    <!-- Test basic buttons -->
+    <div class="mb-3">
+      <button class="btn btn-primary" onclick="testFunction()">Test Function Button</button>
+      <button class="btn btn-success" id="test-event-btn">Test Event Listener</button>
+      <button class="btn btn-warning" onclick="refreshActivity()">Test Global Function</button>
+    </div>
+    
+    <!-- Test modal trigger -->
+    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#testModal">Test Modal</button>
+    
+    <!-- Test Modal -->
+    <div class="modal fade" id="testModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Test Modal</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>This is a test modal to verify Bootstrap functionality.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    function testFunction() {
+      alert('Basic onclick function works!');
+    }
+    
+    function refreshActivity() {
+      alert('Global function works!');
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const testBtn = document.getElementById('test-event-btn');
+      if (testBtn) {
+        testBtn.addEventListener('click', function() {
+          alert('Event listener works!');
+        });
+      }
+      
+      console.log('Test page loaded successfully');
+    });
+  </script>
+</body>
+</html>
