@@ -1,6 +1,8 @@
+console.log('Loading admin.js module...');
 import { auth, db } from './app.js';
 import { onAuthStateChanged, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+console.log('Admin.js imports loaded successfully');
 
 // Check if current user is admin
 function isAdmin(user) {
@@ -16,39 +18,67 @@ function isAdmin(user) {
     return emailDomain && ADMIN_DOMAINS.includes(emailDomain);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('Admin page loaded, setting up interface...');
+// Show toast notification
+function showToast(message, type = 'success') {
+  const toastContainer = document.getElementById('toastContainer');
+  const toastId = 'toast-' + Date.now();
   
-  // Setup navigation and event listeners first (before auth check)
-  setupNavigation();
-  setupEventListeners();
+  const toastHTML = `
+    <div class="toast" id="${toastId}" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="fas fa-${type === 'success' ? 'check-circle text-success' : 'exclamation-circle text-danger'} me-2"></i>
+        <strong class="me-auto">Admin Panel</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    </div>
+  `;
   
-  // Check admin authentication
-  onAuthStateChanged(auth, (user) => {
-    console.log('Auth state changed. User:', user);
-    
-    if (user && user.emailVerified) {
-      console.log('User is authenticated and verified:', user.email);
-      
-      if (isAdmin(user)) {
-        console.log('User has admin privileges');
-        // User is admin and verified
-        loadAdminData(user);
-        // Load initial data only after authentication
-        loadDashboardData();
-      } else {
-        console.log('User does not have admin privileges');
-        // User is not admin, redirect to regular interface
-        alert('Access denied. Admin privileges required.');
-        window.location.href = 'index.html';
-      }
-    } else {
-      console.log('User not authenticated or not verified. Redirecting to login...');
-      // User not authenticated or not verified
-      window.location.href = 'login.html';
-    }
+  toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+  
+  const toastElement = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastElement);
+  toast.show();
+  
+  // Remove toast element after it's hidden
+  toastElement.addEventListener('hidden.bs.toast', () => {
+    toastElement.remove();
   });
-});
+}
+
+// Initialize the admin panel
+async function initializeAdmin() {
+  try {
+    console.log('Initializing admin panel...');
+    console.log('Firebase auth:', auth);
+    console.log('Firebase db:', db);
+    
+    // Set up navigation
+    setupNavigation();
+    
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Load initial dashboard data
+    await loadDashboardData();
+    
+    // Initialize default artifacts if needed
+    await initializeDefaultArtifacts();
+    
+    // Set up real-time activity monitoring
+    setupRealtimeActivity();
+    
+    console.log('Admin panel initialized successfully');
+  } catch (error) {
+    console.error('Error initializing admin panel:', error);
+    showToast('Error initializing admin panel: ' + error.message, 'error');
+  }
+}
+
+// Initialize the admin panel when the DOM is ready
+document.addEventListener('DOMContentLoaded', initializeAdmin);
 
 function loadAdminData(user) {
   // Update admin info in header
@@ -488,75 +518,127 @@ async function loadUsersData() {
   }
 }
 
-function loadARContentData() {
-  // Mock AR content data
-  const arContent = [
-    {
-      id: '1',
-      name: 'T-Rex',
-      description: 'Tyrannosaurus Rex in Augmented Reality',
-      image: 'T-rex_QR.png',
-      status: 'active',
-      views: 150
-    },
-    {
-      id: '2',
-      name: 'Arargasaurus',
-      description: 'Aragosaurus ischiaticus sauropod dinosaur',
-      image: 'Arargasaurus_QR.png',
-      status: 'active',
-      views: 89
-    },
-    {
-      id: '3',
-      name: 'Archaepteryx',
-      description: 'Archaeopteryx, the transitional fossil',
-      image: 'Archaepteryx_QR.png',
-      status: 'active',
-      views: 76
-    },
-    {
-      id: '4',
-      name: 'Longneck',
-      description: 'Long-necked sauropod dinosaur',
-      image: 'Longneck_QR.png',
-      status: 'active',
-      views: 112
-    },
-    {
-      id: '5',
-      name: 'Oviraptor',
-      description: 'Oviraptor, the egg thief dinosaur',
-      image: 'Oviraptor_QR.png',
-      status: 'active',
-      views: 94
-    }
-  ];
-
+async function loadARContentData() {
   const contentGrid = document.getElementById('ar-content-grid');
-  contentGrid.innerHTML = arContent.map(content => `
-    <div class="col-md-4 mb-4">
-      <div class="card">
-        <img src="./artifacts_html/${content.image}" class="card-img-top" alt="${content.name}" style="height: 200px; object-fit: cover;">
-        <div class="card-body">
-          <h5 class="card-title">${content.name}</h5>
-          <p class="card-text">${content.description}</p>
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="badge ${content.status === 'active' ? 'bg-success' : 'bg-secondary'}">${content.status}</span>
-            <small class="text-muted">${content.views} views</small>
-          </div>
-          <div class="mt-3">
-            <button class="btn btn-sm btn-outline-light me-2" onclick="editContent('${content.id}')">
-              <i class="fas fa-edit"></i> Edit
-            </button>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteContent('${content.id}')">
-              <i class="fas fa-trash"></i> Delete
-            </button>
+  
+  // Show loading state
+  contentGrid.innerHTML = `
+    <div class="col-12 text-center">
+      <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading AR content...</p>
+    </div>
+  `;
+
+  try {
+    // Get artifacts from Firestore
+    const artifactsQuery = query(collection(db, 'artifacts'), orderBy('name'));
+    const querySnapshot = await getDocs(artifactsQuery);
+    
+    let arContent = [];
+    
+    if (querySnapshot.empty) {
+      // Initialize default artifacts if none exist
+      console.log('No artifacts found, initializing default artifacts...');
+      await initializeDefaultArtifacts();
+      // Reload after initialization
+      const newQuerySnapshot = await getDocs(artifactsQuery);
+      newQuerySnapshot.forEach((doc) => {
+        arContent.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+    } else {
+      querySnapshot.forEach((doc) => {
+        arContent.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+    }
+
+    if (arContent.length === 0) {
+      contentGrid.innerHTML = `
+        <div class="col-12 text-center text-muted">
+          <i class="fas fa-cube fa-3x mb-3"></i>
+          <p>No AR content found.</p>
+          <p>Add some artifacts to get started.</p>
+        </div>
+      `;
+      return;
+    }
+
+    contentGrid.innerHTML = arContent.map(content => `
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="./artifacts_html/${content.image}" class="card-img-top" alt="${content.name}" 
+               style="height: 200px; object-fit: cover;" 
+               onerror="this.src='https://via.placeholder.com/300x200?text=${encodeURIComponent(content.name)}'">
+          <div class="card-body">
+            <h5 class="card-title">${content.name}</h5>
+            <p class="card-text">${content.description}</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge ${content.enabled ? 'bg-success' : 'bg-secondary'}">
+                ${content.enabled ? 'Active' : 'Disabled'}
+              </span>
+              <small class="text-muted">${content.views || 0} views</small>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" 
+                       id="toggle-${content.id}" 
+                       ${content.enabled ? 'checked' : ''} 
+                       onchange="toggleArtifact('${content.id}', this.checked)">
+                <label class="form-check-label" for="toggle-${content.id}">
+                  ${content.enabled ? 'Enabled' : 'Disabled'}
+                </label>
+              </div>
+              <div>
+                <button class="btn btn-sm btn-outline-light me-2" onclick="editContent('${content.id}')" title="Edit">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteContent('${content.id}')" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+
+    // Update total AR content count and enabled count
+    const enabledCount = arContent.filter(artifact => artifact.enabled).length;
+    document.getElementById('total-ar-content').textContent = arContent.length;
+    
+    // Add status indicator to AR content section
+    const arContentSection = document.querySelector('#ar-content .d-flex.justify-content-between.align-items-center');
+    if (arContentSection) {
+      // Remove existing status if any
+      const existingStatus = arContentSection.querySelector('.artifact-status');
+      if (existingStatus) existingStatus.remove();
+      
+      // Add new status indicator
+      const statusElement = document.createElement('div');
+      statusElement.className = 'artifact-status badge bg-info ms-2';
+      statusElement.innerHTML = `${enabledCount}/${arContent.length} visible to users`;
+      arContentSection.appendChild(statusElement);
+    }
+
+  } catch (error) {
+    console.error('Error loading AR content:', error);
+    contentGrid.innerHTML = `
+      <div class="col-12 text-center text-danger">
+        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+        <p>Error loading AR content: ${error.message}</p>
+        <button class="btn btn-outline-light btn-sm" onclick="loadARContentData()">
+          <i class="fas fa-refresh me-1"></i>Try Again
+        </button>
+      </div>
+    `;
+  }
 }
 
 async function loadAnalyticsData() {
@@ -705,6 +787,136 @@ function handleSystemSettings(e) {
   alert('Settings saved successfully!');
 }
 
+// Initialize default artifacts if none exist
+async function initializeDefaultArtifacts() {
+  const defaultArtifacts = [
+    {
+      id: 'trex',
+      name: 'T-Rex',
+      description: 'Tyrannosaurus Rex in Augmented Reality',
+      image: 'T-rex_QR.png',
+      htmlFile: 'trex.html',
+      enabled: true,
+      views: 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'arargasaurus',
+      name: 'Arargasaurus',
+      description: 'Aragosaurus ischiaticus sauropod dinosaur',
+      image: 'Arargasaurus_QR.png',
+      htmlFile: 'arargasaurus.html',
+      enabled: true,
+      views: 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'archaeopteryx',
+      name: 'Archaeopteryx',
+      description: 'Archaeopteryx, the transitional fossil',
+      image: 'Archaepteryx_QR.png',
+      htmlFile: 'archaepteryx.html',
+      enabled: true,
+      views: 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'longneck',
+      name: 'Longneck',
+      description: 'Long-necked sauropod dinosaur',
+      image: 'Longneck_QR.png',
+      htmlFile: 'longneck.html',
+      enabled: true,
+      views: 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'oviraptor',
+      name: 'Oviraptor',
+      description: 'Oviraptor, the egg thief dinosaur',
+      image: 'Oviraptor_QR.png',
+      htmlFile: 'oviraptor.html',
+      enabled: true,
+      views: 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ];
+
+  try {
+    for (const artifact of defaultArtifacts) {
+      await setDoc(doc(db, 'artifacts', artifact.id), artifact);
+    }
+    console.log('Default artifacts initialized successfully');
+  } catch (error) {
+    console.error('Error initializing default artifacts:', error);
+  }
+}
+
+// Toggle artifact enabled/disabled status
+// This function controls which artifacts are visible on the main index.html page
+// When enabled=true: artifact appears in the public gallery
+// When enabled=false: artifact is hidden from public view
+async function toggleArtifact(artifactId, enabled) {
+  try {
+    await updateDoc(doc(db, 'artifacts', artifactId), {
+      enabled: enabled,
+      updatedAt: new Date()
+    });
+    
+    console.log(`Artifact ${artifactId} ${enabled ? 'enabled' : 'disabled'}`);
+    
+    // Update the toggle label
+    const toggleLabel = document.querySelector(`label[for="toggle-${artifactId}"]`);
+    if (toggleLabel) {
+      toggleLabel.textContent = enabled ? 'Enabled' : 'Disabled';
+    }
+    
+    // Update the status badge
+    const card = document.querySelector(`#toggle-${artifactId}`).closest('.card');
+    const badge = card.querySelector('.badge');
+    if (badge) {
+      badge.className = `badge ${enabled ? 'bg-success' : 'bg-secondary'}`;
+      badge.textContent = enabled ? 'Active' : 'Disabled';
+    }
+    
+    // Show success message
+    const artifactName = artifactId.charAt(0).toUpperCase() + artifactId.slice(1);
+    const statusMessage = `${artifactName} artifact ${enabled ? 'enabled' : 'disabled'} successfully`;
+    const visibilityMessage = enabled 
+      ? 'It will now be visible to users on the main site.'
+      : 'It has been hidden from users on the main site.';
+    
+    showToast(`${statusMessage}<br><small class="text-muted">${visibilityMessage}</small>`);
+    
+    // Broadcast the change to other tabs/windows
+    localStorage.setItem('artifactToggleUpdate', JSON.stringify({
+      artifactId: artifactId,
+      enabled: enabled,
+      timestamp: Date.now()
+    }));
+    
+  } catch (error) {
+    console.error('Error toggling artifact:', error);
+    
+    // Revert the toggle state
+    const toggle = document.getElementById(`toggle-${artifactId}`);
+    if (toggle) {
+      toggle.checked = !enabled;
+    }
+    
+    showToast('Failed to update artifact status: ' + error.message, 'error');
+  }
+}
+
+// Make functions globally available
+window.toggleArtifact = toggleArtifact;
+window.loadUsersData = loadUsersData;
+
 // Global functions for user actions
 window.editUser = function(userId) {
   alert(`Edit user functionality would be implemented for user ID: ${userId}`);
@@ -740,11 +952,25 @@ window.editContent = function(contentId) {
   alert(`Edit AR content functionality would be implemented for content ID: ${contentId}`);
 };
 
-window.deleteContent = function(contentId) {
-  if (confirm('Are you sure you want to delete this AR content?')) {
-    alert(`Delete content functionality would be implemented for content ID: ${contentId}`);
-    loadARContentData(); // Refresh the grid
+window.deleteContent = async function(contentId) {
+  if (confirm('Are you sure you want to delete this AR content? This action cannot be undone.')) {
+    try {
+      // Delete artifact document from Firestore
+      await deleteDoc(doc(db, 'artifacts', contentId));
+      
+      alert('Artifact deleted successfully from database.');
+      loadARContentData(); // Refresh the grid
+      
+    } catch (error) {
+      console.error('Error deleting artifact:', error);
+      alert('Error deleting artifact: ' + error.message);
+    }
   }
+};
+
+// Add refresh button functionality for AR Content
+window.refreshARContent = function() {
+  loadARContentData();
 };
 
 // Analytics Functions (moved up from duplicate section)

@@ -104,5 +104,24 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
   <script type="module" src="qr.js"></script>
+  
+  <!-- Artifact Access Control -->
+  <script type="module">
+    import { isArtifactEnabled } from '../artifacts.js';
+    
+    // Check if Longneck artifact is enabled
+    async function checkArtifactAccess() {
+      const isEnabled = await isArtifactEnabled('longneck');
+      
+      if (!isEnabled) {
+        // Redirect to main page with message
+        alert('This artifact is currently unavailable. Please check back later.');
+        window.location.href = '../index.html';
+      }
+    }
+    
+    // Check access when page loads
+    checkArtifactAccess();
+  </script>
 </body>
 </html>

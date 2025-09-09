@@ -3,158 +3,379 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>COSC300</title>
+  <title>Museum AR Experience</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
+  
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      color: white;
+    }
+    
+    .main-header {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1050;
+    }
+    
+    .main-sidebar {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      min-height: calc(100vh - 76px);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .content-area {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      margin: 20px;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 0;
+      overflow-x: auto;
+    }
+    
+    .artifact-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .artifact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn-ar {
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      border: none;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-ar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+    
+    .stats-card {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.2));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    
+    .dropdown-menu {
+      z-index: 9999 !important;
+      background: rgba(0, 0, 0, 0.95) !important;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      position: absolute !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .dropdown-item {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+    
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: white !important;
+    }
+    
+    /* Ensure dropdown parent has proper positioning */
+    .nav-item.dropdown {
+      position: static !important;
+    }
+    
+    .dropdown-toggle::after {
+      margin-left: 0.5em;
+    }
+    
+    /* Force dropdown to appear above everything */
+    .navbar .dropdown-menu {
+      position: absolute !important;
+      top: 100% !important;
+      right: 0 !important;
+      left: auto !important;
+      z-index: 10000 !important;
+      min-width: 200px;
+    }
+    
+    .search-controls {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .form-control {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+    
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: #4ecdc4;
+      color: white;
+      box-shadow: 0 0 0 0.25rem rgba(78, 205, 196, 0.25);
+    }
+    
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+      .content-area {
+        margin: 10px;
+        padding: 20px;
+      }
+      
+      .search-controls {
+        padding: 15px;
+      }
+      
+      .artifact-card {
+        margin-bottom: 1rem;
+      }
+    }
+    
+    /* Ensure main content doesn't get blocked */
+    .main-content-wrapper {
+      width: 100%;
+      overflow-x: hidden;
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
 
-  <!-- Side Bar -->
-  <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">User Details</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body d-flex flex-column justify-content-between h-100">
-      <!-- User Details Section -->
-      <div class="mb-4 text-center">
-        <img id="user-avatar" src="https://ui-avatars.com/api/?name=User" alt="User Avatar" class="rounded-circle mb-2" width="80" height="80">
-        <h6 id="user-fullname" class="mb-1"></h6>
-        <p id="user-email" class="text-muted small mb-0"></p>
-      </div>
-      <div class="mt-auto text-center pb-3">
-        <button id="log-out-button" type="button" class="btn btn-danger w-75">Log Out</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <!-- Main Header -->
+  <nav class="navbar navbar-expand-lg navbar-dark main-header">
     <div class="container-fluid">
-      <a class="navbar-brand nav-head" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Museum AR</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
+      <button class="btn btn-outline-light me-2 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+        <i class="fas fa-bars"></i>
       </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center">
-          <li class="nav-item"><a class="nav-link active" id="home-btn" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Exhibits</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-          <li class="nav-item ms-2">
-            <button id="settings-btn" class="btn btn-sm btn-light"><i class="bi bi-gear"></i> Settings</button>
-          </li>
-          <li class="nav-item ms-2">
-            <button id="theme-toggle" class="btn btn-sm btn-light"><i class="bi bi-moon-fill"></i> Dark Mode</button>
-          </li>
-        </ul>
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-cube me-2"></i>Museum AR Experience
+      </a>
+      <div class="navbar-nav ms-auto">
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <img id="user-avatar" src="https://ui-avatars.com/api/?name=Visitor" alt="User" class="rounded-circle me-2" width="32" height="32">
+            <span id="user-name">Museum Visitor</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" id="user-profile"><i class="fas fa-user me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="#" id="user-settings"><i class="fas fa-cog me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" id="user-logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- Settings Panel -->
-  <div id="settings-panel" class="container mt-3 d-none">
-    <div class="card shadow-sm">
-      <div class="card-header bg-light">
-        <h5 class="mb-0">AR Settings</h5>
-      </div>
-      <div class="card-body">
-        <form>
-          <div class="mb-3">
-            <label class="form-label">Language</label>
-            <select class="form-select">
-              <option>English</option>
-              <option>Spanish</option>
-              <option>French</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Text Size</label>
-            <input type="range" class="form-range" min="12" max="24" step="2">
-          </div>
-          <div class="form-check form-switch mb-3">
-            <input class="form-check-input" type="checkbox" id="audio-toggle">
-            <label class="form-check-label" for="audio-toggle">Enable Audio Guides</label>
-          </div>
-          <button type="button" class="btn btn-sm btn-primary">Save</button>
-        </form>
-      </div>
+  <!-- Mobile Sidebar -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+    <div class="offcanvas-header" style="background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px);">
+      <h5 class="offcanvas-title text-white" id="mobileSidebarLabel">
+        <i class="fas fa-cube me-2"></i>Museum AR
+      </h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
-  </div>
-
-  <!-- Main Content -->
-  <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="h3 mb-0">Museum Artifacts</h1>
-      <input id="search-bar" type="text" class="form-control w-50" placeholder="Search artifacts...">
-    </div>
-
-    <!-- Artifact Cards -->
-    <div class="row g-4" id="artifact-gallery">
-      <div class="col-md-4 col-lg-2">
-        <div class="card h-100 shadow-sm">
-          <img src="./AR_QR_CODES/Arargasaurus.png" class="card-img-top" alt="Arargasaurus QR">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">Arargasaurus</h5>
-            <p class="card-text">A unique sauropod dinosaur from the Early Cretaceous period.</p>
-            <button id="arargasaurus" class="btn btn-primary mt-auto w-100 view-ar-btn">View in AR</button>
-          </div>
+    <div class="offcanvas-body" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+      <div class="mb-4">
+        <h6 class="text-uppercase text-muted small mb-3">Quick Stats</h6>
+        <div class="card stats-card text-center p-3 mb-3">
+          <i class="fas fa-eye fa-2x mb-2"></i>
+          <h5>5</h5>
+          <p class="mb-0 small">Available Artifacts</p>
+        </div>
+        <div class="card stats-card text-center p-3 mb-3">
+          <i class="fas fa-qrcode fa-2x mb-2"></i>
+          <h5>0</h5>
+          <p class="mb-0 small">QR Scans Today</p>
         </div>
       </div>
-      <div class="col-md-4 col-lg-2">
-        <div class="card h-100 shadow-sm">
-          <img src="./AR_QR_CODES/Archaepteryx.png" class="card-img-top" alt="Archaepteryx QR">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">Archaepteryx</h5>
-            <p class="card-text">An ancient bird-like dinosaur with feathers and wings.</p>
-            <button id="archaepteryx" class="btn btn-primary mt-auto w-100 view-ar-btn">View in AR</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-2">
-        <div class="card h-100 shadow-sm">
-          <img src="./AR_QR_CODES/Longneck.png" class="card-img-top" alt="Longneck QR">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">Longneck</h5>
-            <p class="card-text">A classic sauropod known for its long neck and massive size.</p>
-            <button id="longneck" class="btn btn-primary mt-auto w-100 view-ar-btn">View in AR</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-2">
-        <div class="card h-100 shadow-sm">
-          <img src="./AR_QR_CODES/Oviraptor.png" class="card-img-top" alt="Oviraptor QR">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">Oviraptor</h5>
-            <p class="card-text">A small, fast dinosaur known for its beak and egg-stealing reputation.</p>
-            <button id="oviraptor" class="btn btn-primary mt-auto w-100 view-ar-btn">View in AR</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-2">
-        <div class="card h-100 shadow-sm">
-          <img src="./AR_QR_CODES/T-rex.png" class="card-img-top" alt="T-rex QR">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">T-rex</h5>
-            <p class="card-text">The iconic apex predator of the Late Cretaceous period.</p>
-            <button id="t-rex" class="btn btn-primary mt-auto w-100 view-ar-btn">View in AR</button>
-          </div>
+      
+      <div class="mb-4">
+        <h6 class="text-uppercase text-muted small mb-3">Categories</h6>
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action bg-transparent text-light border-secondary active">
+            <i class="fas fa-dragon me-2"></i>Dinosaurs
+          </a>
+          <a href="#" class="list-group-item list-group-item-action bg-transparent text-light border-secondary">
+            <i class="fas fa-leaf me-2"></i>Fossils
+          </a>
+          <a href="#" class="list-group-item list-group-item-action bg-transparent text-light border-secondary">
+            <i class="fas fa-gem me-2"></i>Minerals
+          </a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal -->
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Desktop Sidebar -->
+      <div class="col-md-3 col-lg-2 main-sidebar p-3 d-none d-md-block">
+        <div class="mb-4">
+          <h6 class="text-uppercase text-muted small mb-3">Quick Stats</h6>
+          <div class="card stats-card text-center p-3 mb-3">
+            <i class="fas fa-eye fa-2x mb-2"></i>
+            <h5 id="total-artifacts">5</h5>
+            <p class="mb-0 small">Available Artifacts</p>
+          </div>
+          <div class="card stats-card text-center p-3 mb-3">
+            <i class="fas fa-qrcode fa-2x mb-2"></i>
+            <h5 id="total-views">0</h5>
+            <p class="mb-0 small">QR Scans Today</p>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <h6 class="text-uppercase text-muted small mb-3">Categories</h6>
+          <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-light border-secondary active">
+              <i class="fas fa-dragon me-2"></i>Dinosaurs
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-light border-secondary">
+              <i class="fas fa-leaf me-2"></i>Fossils
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-light border-secondary">
+              <i class="fas fa-gem me-2"></i>Minerals
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="col-12 col-md-9 col-lg-10">
+        <div class="content-area">
+          
+          <!-- Header Section -->
+          <div class="mb-4">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h2 class="mb-1"><i class="fas fa-cube me-2"></i>AR Museum Artifacts</h2>
+                <p class="text-muted mb-0">Discover our collection through augmented reality</p>
+              </div>
+              <div class="col-md-6 mt-3 mt-md-0">
+                <div class="search-controls">
+                  <div class="d-flex gap-2 align-items-center">
+                    <input id="search-bar" type="text" class="form-control flex-grow-1" placeholder="Search artifacts...">
+                    <button id="refresh-artifacts-btn" class="btn btn-outline-light" title="Refresh artifacts">
+                      <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Artifact Gallery -->
+          <div class="row g-4" id="artifact-gallery">
+            <!-- Artifacts will be loaded dynamically -->
+            <div class="col-12 text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-2">Loading AR artifacts...</p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Artifact Detail Modal -->
   <div class="modal fade" id="artifactModal" tabindex="-1" aria-labelledby="artifactModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
+      <div class="modal-content bg-dark text-white">
         <div class="modal-header">
-          <h5 class="modal-title" id="artifactModalLabel">Artifact Title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="artifactModalLabel">
+            <i class="fas fa-cube me-2"></i>Artifact Details
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <img id="artifactImage" src="" alt="Artifact Image" class="img-fluid mb-3">
-          <p id="artifactDescription"></p>
+          <div class="row">
+            <div class="col-md-6">
+              <img id="artifactImage" src="" alt="Artifact Image" class="img-fluid rounded mb-3">
+            </div>
+            <div class="col-md-6">
+              <h4 id="artifactName" class="mb-3"></h4>
+              <p id="artifactDescription" class="mb-4"></p>
+              <div class="d-grid">
+                <button id="modalViewAR" class="btn btn-ar btn-lg">
+                  <i class="fas fa-cube me-2"></i>Experience in AR
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title" id="settingsModalLabel">
+            <i class="fas fa-cog me-2"></i>AR Settings
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Language</label>
+              <select class="form-select bg-dark text-white border-secondary">
+                <option>English</option>
+                <option>Spanish</option>
+                <option>French</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Audio Guide Volume</label>
+              <input type="range" class="form-range" min="0" max="100" value="75">
+            </div>
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="audio-toggle" checked>
+              <label class="form-check-label" for="audio-toggle">Enable Audio Guides</label>
+            </div>
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="haptic-toggle" checked>
+              <label class="form-check-label" for="haptic-toggle">Haptic Feedback</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-ar">Save Settings</button>
         </div>
       </div>
     </div>

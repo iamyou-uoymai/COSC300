@@ -1,129 +1,264 @@
 import { auth, db } from './app.js';
 import { onAuthStateChanged, applyActionCode } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// Note: Loading artifacts directly from local files
 
-if (!sessionStorage.getItem('visited')) {
-  window.location.href = 'login.html';
+// Temporarily bypass authentication for testing
+// if (!sessionStorage.getItem('visited')) {
+//   window.location.href = 'login.html';
+// }
+
+// Note: Since we're loading directly from local files, 
+// admin panel toggles won't affect display unless you implement local storage persistence
+
+// Load artifacts directly from local files
+async function loadArtifacts() {
+  console.log('Loading artifacts from local COSC300 folder...');
+  const artifactGallery = document.getElementById('artifact-gallery');
+  
+  if (!artifactGallery) {
+    console.error('Artifact gallery element not found');
+    return;
+  }
+  
+  // Show loading state
+  artifactGallery.innerHTML = `
+    <div class="col-12 text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading AR artifacts...</p>
+    </div>
+  `;
+
+  try {
+    // Define local artifacts based on your COSC300 folder structure
+    const localArtifacts = [
+      {
+        id: 'trex',
+        name: 'T-Rex',
+        description: 'The iconic apex predator of the Late Cretaceous period.',
+        image: 'T-rex.png',
+        htmlFile: 'trex.html',
+        enabled: true
+      },
+      {
+        id: 'arargasaurus',
+        name: 'Arargasaurus',
+        description: 'A unique sauropod dinosaur from the Early Cretaceous period.',
+        image: 'Arargasaurus.png',
+        htmlFile: 'arargasaurus.html',
+        enabled: true
+      },
+      {
+        id: 'archaepteryx',
+        name: 'Archaepteryx',
+        description: 'An ancient bird-like dinosaur with feathers and wings.',
+        image: 'Archaepteryx.png',
+        htmlFile: 'archaepteryx.html',
+        enabled: true
+      },
+      {
+        id: 'longneck',
+        name: 'Longneck',
+        description: 'A classic sauropod known for its long neck and massive size.',
+        image: 'Longneck.png',
+        htmlFile: 'longneck.html',
+        enabled: true
+      },
+      {
+        id: 'oviraptor',
+        name: 'Oviraptor',
+        description: 'A small, fast dinosaur known for its beak and egg-stealing reputation.',
+        image: 'Oviraptor.png',
+        htmlFile: 'oviraptor.html',
+        enabled: true
+      }
+    ];
+
+    console.log('Local artifacts loaded:', localArtifacts);
+
+    // Generate artifact cards with admin-style design
+    artifactGallery.innerHTML = localArtifacts.map(artifact => `
+      <div class="col-md-6 col-lg-4 col-xl-3" data-artifact-id="${artifact.id}">
+        <div class="card artifact-card h-100">
+          <div class="position-relative">
+            <img src="./AR_QR_CODES/${artifact.image}" class="card-img-top" alt="${artifact.name} QR" 
+                 style="height: 200px; object-fit: cover;" 
+                 onerror="this.src='https://via.placeholder.com/300x200?text=${encodeURIComponent(artifact.name)}'">
+            <div class="position-absolute top-0 end-0 m-2">
+              <span class="badge bg-success">
+                <i class="fas fa-check-circle me-1"></i>Active
+              </span>
+            </div>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-0">${artifact.name}</h5>
+              <button class="btn btn-sm btn-outline-light" onclick="showArtifactDetails('${artifact.id}')" title="More Info">
+                <i class="fas fa-info-circle"></i>
+              </button>
+            </div>
+            <p class="card-text text-muted small mb-3">${artifact.description}</p>
+            <div class="mt-auto">
+              <button id="${artifact.id}" class="btn btn-ar w-100 view-ar-btn" 
+                      data-artifact-id="${artifact.id}" data-html-file="${artifact.htmlFile}">
+                <i class="fas fa-cube me-2"></i>Experience in AR
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Add event listeners to all AR buttons
+    const arButtons = document.querySelectorAll('.view-ar-btn');
+    arButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const artifactId = this.getAttribute('data-artifact-id');
+        const htmlFile = this.getAttribute('data-html-file');
+        
+        console.log(`Opening AR view for: ${artifactId}`);
+        
+        // Redirect to AR page
+        window.location.href = `artifacts_html/${htmlFile}`;
+      });
+    });
+
+    console.log(`Successfully loaded ${localArtifacts.length} local artifacts`);
+
+    // Add search functionality
+    setupSearchFunction(localArtifacts);
+
+  } catch (error) {
+    console.error('Error loading artifacts:', error);
+    artifactGallery.innerHTML = `
+      <div class="col-12 text-center">
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Error loading artifacts. Please refresh the page.
+          <button class="btn btn-outline-danger btn-sm ms-2" onclick="loadArtifacts()">Retry</button>
+        </div>
+      </div>
+    `;
+  }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Handle email verification link
-  handleEmailVerification();
+// Make loadArtifacts globally available for retry button
+window.loadArtifacts = loadArtifacts;
 
-  // Button redirects
-  const arargasaurusBtn = document.getElementById('arargasaurus');
-  if (arargasaurusBtn) {
-    arargasaurusBtn.addEventListener('click', function() {
-      window.location.href = 'artifacts_html/arargasaurus.html';
-    });
-  }
-
-  const archaepteryxBtn = document.getElementById('archaepteryx');
-  if (archaepteryxBtn) {
-    archaepteryxBtn.addEventListener('click', function() {
-      window.location.href = 'artifacts_html/archaepteryx.html';
-    });
-  }
-
-  const tRexBtn = document.getElementById('t-rex');
-  if (tRexBtn) {
-    tRexBtn.addEventListener('click', function() {
-      window.location.href = 'artifacts_html/trex.html';
-    });
-  }
-
-  const oviraptorBtn = document.getElementById('oviraptor');
-  if (oviraptorBtn) {
-    oviraptorBtn.addEventListener('click', function() {
-      window.location.href = 'artifacts_html/oviraptor.html';
-    });
-  }
-
-  const longneckBtn = document.getElementById('longneck');
-  if (longneckBtn) {
-    longneckBtn.addEventListener('click', function() {
-      window.location.href = 'artifacts_html/longneck.html';
-    });
-  }
-
-  // Home button redirect
-  const homeBtn = document.getElementById('home-btn');
-  if (homeBtn) {
-    homeBtn.addEventListener('click', function() {
-      window.location.href = 'index.html';
-    });
-  }
-
-  // User details in sidebar
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // Check if email is verified before allowing access
-      if (!user.emailVerified) {
-        // Sign out unverified user and redirect to login
-        auth.signOut().then(() => {
-          sessionStorage.removeItem('visited');
-          alert('Please verify your email address before accessing the Museum AR experience.');
-          window.location.href = "login.html";
-        });
-        return;
-      }
-      
-      // User is verified, show their details
-      document.getElementById('user-fullname').textContent = user.displayName || "No Name";
-      document.getElementById('user-email').textContent = user.email || "";
-      document.getElementById('user-avatar').src = user.photoURL 
-        ? user.photoURL 
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
-      
-      // Update last login time in Firestore
-      updateDoc(doc(db, 'users', user.uid), {
-        lastLoginAt: new Date()
-      }).catch(error => {
-        console.log('Note: Could not update last login time:', error.message);
-      });
-      
-      // Check if user is admin and show admin link
-      checkAdminAccess(user);
-    } else {
-      // If not signed in, redirect to login
-      window.location.href = "login.html";
+// Show artifact details in modal
+function showArtifactDetails(artifactId) {
+  const localArtifacts = [
+    {
+      id: 'trex',
+      name: 'T-Rex',
+      description: 'The iconic apex predator of the Late Cretaceous period. Tyrannosaurus rex was one of the largest land-based predators ever known, with powerful jaws containing dozens of sharp teeth.',
+      image: 'T-rex.png',
+      htmlFile: 'trex.html'
+    },
+    {
+      id: 'arargasaurus',
+      name: 'Arargasaurus',
+      description: 'A unique sauropod dinosaur from the Early Cretaceous period. This distinctive dinosaur had tall spines along its neck and back, making it easily recognizable among sauropods.',
+      image: 'Arargasaurus.png',
+      htmlFile: 'arargasaurus.html'
+    },
+    {
+      id: 'archaepteryx',
+      name: 'Archaepteryx',
+      description: 'An ancient bird-like dinosaur with feathers and wings. Often called the "first bird," Archaepteryx represents a crucial link between dinosaurs and modern birds.',
+      image: 'Archaepteryx.png',
+      htmlFile: 'archaepteryx.html'
+    },
+    {
+      id: 'longneck',
+      name: 'Longneck',
+      description: 'A classic sauropod known for its long neck and massive size. These gentle giants used their extended necks to reach vegetation high in ancient forests.',
+      image: 'Longneck.png',
+      htmlFile: 'longneck.html'
+    },
+    {
+      id: 'oviraptor',
+      name: 'Oviraptor',
+      description: 'A small, fast dinosaur known for its beak and egg-stealing reputation. Despite its name meaning "egg thief," recent discoveries suggest it was actually protecting its own eggs.',
+      image: 'Oviraptor.png',
+      htmlFile: 'oviraptor.html'
     }
-  });
+  ];
   
-  // Log out logic
-  const logoutBtn = document.getElementById('log-out-button');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async function() {
-      try {
+  const artifact = localArtifacts.find(a => a.id === artifactId);
+  if (artifact) {
+    document.getElementById('artifactName').textContent = artifact.name;
+    document.getElementById('artifactDescription').textContent = artifact.description;
+    document.getElementById('artifactImage').src = `./AR_QR_CODES/${artifact.image}`;
+    
+    // Set up the modal AR button
+    const modalARBtn = document.getElementById('modalViewAR');
+    modalARBtn.onclick = () => {
+      window.location.href = `artifacts_html/${artifact.htmlFile}`;
+    };
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('artifactModal'));
+    modal.show();
+  }
+}
+
+// Make function globally available
+window.showArtifactDetails = showArtifactDetails;
+
+// Handle user logout
+async function handleLogout() {
+  try {
+    // Show confirmation dialog
+    if (confirm('Are you sure you want to logout?')) {
+      console.log('Logging out user...');
+      
+      // Sign out from Firebase if available
+      if (auth && auth.signOut) {
         await auth.signOut();
-        sessionStorage.removeItem('visited');
-        window.location.href = 'login.html';
-      } catch (error) {
-        alert('Error signing out: ' + error.message);
+      }
+      
+      // Clear session storage
+      sessionStorage.clear();
+      localStorage.removeItem('visited');
+      
+      // Show logout success message
+      alert('You have been successfully logged out.');
+      
+      // Redirect to login page
+      window.location.href = 'login.html';
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+    alert('Error during logout. Please try again.');
+  }
+}
+
+// Setup search functionality
+function setupSearchFunction(artifacts) {
+  const searchBar = document.getElementById('search-bar');
+  if (!searchBar) return;
+
+  searchBar.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase().trim();
+    const artifactCards = document.querySelectorAll('[data-artifact-id]');
+    
+    artifactCards.forEach(card => {
+      const artifactName = card.querySelector('.card-title').textContent.toLowerCase();
+      const artifactDesc = card.querySelector('.card-text').textContent.toLowerCase();
+      
+      if (searchTerm === '' || 
+          artifactName.includes(searchTerm) || 
+          artifactDesc.includes(searchTerm)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
       }
     });
-  }
-
-  // Dark mode logic
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  themeToggleBtn?.addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
-    // Optionally, save preference
-    if (document.body.classList.contains('dark-mode')) {
-      localStorage.setItem('theme', 'dark');
-      themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
-    } else {
-      localStorage.setItem('theme', 'light');
-      themeToggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
-    }
   });
-
-  // On load, apply saved theme
-  if (localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark-mode');
-    if (themeToggleBtn) themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
-  }
-});
+}
 
 // Function to handle email verification links
 async function handleEmailVerification() {
@@ -283,3 +418,136 @@ function showAdminLink() {
     }
   }
 }
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded, initializing...');
+  
+  // Handle email verification link
+  handleEmailVerification();
+  
+  // Load dynamic artifacts
+  loadArtifacts();
+
+  // Refresh artifacts button
+  const refreshBtn = document.getElementById('refresh-artifacts-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function() {
+      console.log('Manual refresh requested');
+      // Show loading state on button
+      const originalContent = this.innerHTML;
+      this.innerHTML = '<i class="bi bi-arrow-clockwise" style="animation: spin 1s linear infinite;"></i>';
+      this.disabled = true;
+      
+      loadArtifacts().finally(() => {
+        // Restore button state
+        this.innerHTML = originalContent;
+        this.disabled = false;
+      });
+    });
+  }
+
+  // Settings button functionality
+  const settingsBtn = document.getElementById('user-settings');
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
+      settingsModal.show();
+    });
+  }
+
+  // Initialize user info with default values
+  document.getElementById('user-name').textContent = 'Guest User';
+  document.getElementById('user-avatar').src = 'https://ui-avatars.com/api/?name=Guest+User&background=4ecdc4&color=fff';
+
+  // Logout button functionality (dropdown)
+  const dropdownLogoutBtn = document.getElementById('user-logout');
+  if (dropdownLogoutBtn) {
+    dropdownLogoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      handleLogout();
+    });
+  }
+
+  // Home button redirect
+  const homeBtn = document.getElementById('home-btn');
+  if (homeBtn) {
+    homeBtn.addEventListener('click', function() {
+      window.location.href = 'index.html';
+    });
+  }
+
+  // User details in sidebar
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // Check if email is verified before allowing access (disabled for testing)
+      // if (!user.emailVerified) {
+      //   // Sign out unverified user and redirect to login
+      //   auth.signOut().then(() => {
+      //     sessionStorage.removeItem('visited');
+      //     alert('Please verify your email address before accessing the Museum AR experience.');
+      //     window.location.href = "login.html";
+      //   });
+      //   return;
+      // }
+      
+      // User is verified, show their details in sidebar (if elements exist)
+      const userFullname = document.getElementById('user-fullname');
+      const userEmail = document.getElementById('user-email');
+      if (userFullname) userFullname.textContent = user.displayName || "No Name";
+      if (userEmail) userEmail.textContent = user.email || "";
+      
+      // Update header user info
+      document.getElementById('user-name').textContent = user.displayName || user.email || "User";
+      document.getElementById('user-avatar').src = user.photoURL 
+        ? user.photoURL 
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email || "User")}&background=4ecdc4&color=fff`;
+      
+      // Update last login time in Firestore
+      updateDoc(doc(db, 'users', user.uid), {
+        lastLoginAt: new Date()
+      }).catch(error => {
+        console.log('Note: Could not update last login time:', error.message);
+      });
+      
+      // Check if user is admin and show admin link
+      checkAdminAccess(user);
+    } else {
+      // If not signed in, show guest user info (for testing)
+      console.log('No user signed in, showing as guest user');
+      document.getElementById('user-name').textContent = 'Guest User';
+      document.getElementById('user-avatar').src = 'https://ui-avatars.com/api/?name=Guest+User&background=6c757d&color=fff';
+      // window.location.href = "login.html";
+    }
+  });
+  
+  // Log out logic (sidebar button)
+  const logoutBtn = document.getElementById('log-out-button');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      handleLogout();
+    });
+  }
+
+  // Dark mode logic
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  themeToggleBtn?.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    // Optionally, save preference
+    if (document.body.classList.contains('dark-mode')) {
+      localStorage.setItem('theme', 'dark');
+      themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+    } else {
+      localStorage.setItem('theme', 'light');
+      themeToggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
+    }
+  });
+
+  // On load, apply saved theme
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    if (themeToggleBtn) themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+  }
+});
