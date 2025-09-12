@@ -28,26 +28,34 @@ class Login {
         }
 
         async handleLogin() {
+               console.log('🔍 Login attempt started');
                this.showLoading();
 
             const email = document.querySelector("#login-email").value;
             const password = document.querySelector("#login-password").value;
 
+            console.log('📧 Email:', email);
+            console.log('🔒 Password length:', password ? password.length : 0);
+
             // validate email format 
             if (!this.isValidEmail(email)){
+                console.log('❌ Invalid email format');
                 this.showErrorMessage("Please enter a valid email address.", "email");
                 this.hideLoading();
                 return;
             }
             if ( !password) {
+                console.log('❌ No password provided');
                 this.showErrorMessage("Please Enter your password.", "password");
                 this.hideLoading();
                 return;
             }
 
             try {
+                console.log('🔄 Attempting Firebase authentication...');
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
+                console.log('✅ Firebase authentication successful:', user.email);
                 //store the email in the local storage when the remember me if checked 
                 if (document.getElementById('rememberMe').checked){
                     localStorage.setItem('rememberedEmail', email);
@@ -72,6 +80,9 @@ class Login {
                 }
                 // verify if all the field are filled with the correct format and return feedback is error encountered 
             } catch (error) {
+                console.error('❌ Login error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
                 const friendlyMessage = this.getFriendlyErrorMessage(error.code);
               this.showErrorMessage(friendlyMessage);
                this.hideLoading();
@@ -334,6 +345,8 @@ class Login {
     }
 }
 
+// Create login instance
+const login = new Login();
 
 // Initialize the login functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -367,4 +380,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-console.log(login);

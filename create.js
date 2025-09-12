@@ -78,24 +78,23 @@ class Register {
     addEventListeners() {
 
       document.querySelector('#register-name').addEventListener("blur", (e) => {
-         this.validateName(e.target.value);
+         // Name validation will happen on form submission
       });
 
       document.querySelector('#register-email').addEventListener("blur", (e) => {
-         this.validateEmail(e.target.value);
+         // Email validation will happen on form submission
       });
         
       document.querySelector("#phone-number").addEventListener("blur", (e) => {
-         this.validatePhoneNumber(e.target.value);
+         // Phone validation will happen on form submission
       });
 
       document.querySelector("#register-password").addEventListener("blur", (e) => {
-         this.validatePassword(e.target.value);
-         this.validatePasswordMatch();
+         // Password validation will happen on form submission
       });
 
       document.querySelector('#retype-password').addEventListener("blur", (e) => {
-        this.validatePasswordMatch();
+        // Password match validation will happen on form submission
       });
 
         this.$submitRegistrationButton.addEventListener("click", async (event) => {
@@ -114,11 +113,10 @@ class Register {
                 return;
             }
 
-            // Phone number validation
-            const phonePattern = /^(07|08|06)\d{8}$/;
+            // Phone number validation - must be exactly 9 digits
             const cleanPhoneNumber = this.$PhoneNumber.replace(/\s/g, '');
-            if (!phonePattern.test(cleanPhoneNumber)) {
-                alert("Phone number must be 10 digits and start with 07, 08, or 06.");
+            if (cleanPhoneNumber.length !== 9) {
+                alert("Phone number must be exactly 9 digits.");
                 return;
             }
 
