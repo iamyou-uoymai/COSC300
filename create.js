@@ -41,7 +41,7 @@ class Register {
         if (digitCount === 9) {
             this.$digitCounter.style.color = '#2ecc71'; 
         } else {
-            this.$digitCounter.style.color = '#6c757d'; e
+            this.$digitCounter.style.color = '#6c757d'; 
         }
     }
     // password visitility function 
@@ -116,7 +116,8 @@ class Register {
 
             // Phone number validation
             const phonePattern = /^(07|08|06)\d{8}$/;
-            if (!phonePattern.test(this.$PhoneNumber)) {
+            const cleanPhoneNumber = this.$PhoneNumber.replace(/\s/g, '');
+            if (!phonePattern.test(cleanPhoneNumber)) {
                 alert("Phone number must be 10 digits and start with 07, 08, or 06.");
                 return;
             }
@@ -146,17 +147,17 @@ class Register {
 
             try {
                 // Create the user with email and password
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, this.$RegisterEmail, this.$RegisterPassword);
                 const user = userCredential.user;
 
                 // Update the user's profile with their name
-                await updateProfile(user, { displayName: name });
+                await updateProfile(user, { displayName: this.$RegisterName });
 
                 // Save user data to Firestore
                 await setDoc(doc(db, 'users', user.uid), {
-                    displayName: name,
-                    email: email,
-                    phoneNumber: "+27" + phone,
+                    displayName: this.$RegisterName,
+                    email: this.$RegisterEmail,
+                    phoneNumber: "+27" + this.$PhoneNumber.replace(/\s/g, ''),
                     emailVerified: false,
                     role: 'user',
                     createdAt: new Date(),
@@ -176,8 +177,9 @@ class Register {
                 console.error("Error during registration:", error);
                 alert(error.message || "An error occurred during registration.");
             }
-        }
-     }
+        });
+    }
+}
 
 let register = new Register();
 

@@ -24,6 +24,21 @@
             min-height: 100vh;
             position: relative;
         }
+
+        /* Password toggle button styles */
+        .password-toggle-btn {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle-btn:hover {
+            color: #007bff !important;
+        }
+
+        .password-toggle-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
     </style>
 
 </head>
@@ -65,9 +80,9 @@
 
            <div class="mb-3">
         <label for="password" class="form-label">PASSWORD</label>
-        <div class="password-container">
-        <input type="password" class="form-control" id="register-password" placeholder="Enter Password" required>
-               <button type="button" class="password-toggle" id="password-toggle">
+        <div class="position-relative">
+        <input type="password" class="form-control pe-5" id="register-password" placeholder="Enter Password" required>
+               <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent text-muted password-toggle-btn" id="password-toggle" style="z-index: 10;">
                 <i class="far fa-eye"></i>
                     </button>
         </div>
@@ -75,16 +90,16 @@
                
          <div class="mb-3">
         <label for="retype-password" class="form-label">RETYPE PASSWORD</label>
-            <div class="password-container">
-        <input type="password" class="form-control" id="retype-password" placeholder="Retype password" required>
-              <button type="button" class="password-toggle" id="retype-password-toggle">
+            <div class="position-relative">
+        <input type="password" class="form-control pe-5" id="retype-password" placeholder="Retype password" required>
+              <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent text-muted password-toggle-btn" id="retype-password-toggle" style="z-index: 10;">
               <i class="far fa-eye"></i>
             </button>
             </div>
          </div>
            
          <div class="d-grid gap-2">
-        <button id="submit-registration" type="submit" class="btn btn-primary sign-up-btn " id="submit-registration" > Sign up</button>
+        <button id="submit-registration" type="submit" class="btn btn-primary sign-up-btn"> Sign up</button>
             </div>
         </form>
 
