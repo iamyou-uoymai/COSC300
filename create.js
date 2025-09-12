@@ -31,7 +31,7 @@ class Register {
             // Phone number validation
             const phonePattern = /^(07|08|06)\d{8}$/;
             if (!phonePattern.test(this.$PhoneNumber)) {
-                alert("Phone number must be 10 digits and start with 07, 08, or 06.");
+                alert("Invalid phone number. It must be 10 digits and start with 07, 08, or 06.");
                 return;
             }
 

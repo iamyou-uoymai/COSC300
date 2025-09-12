@@ -34,6 +34,7 @@ class Login {
                 }
                 
                 // Check if user is admin and redirect accordingly
+                sessionStorage.setItem('justLoggedIn', 'true');
                 if (this.isAdmin(user)) {
                     window.location.href = "admin.html";
                 } else {
@@ -229,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Check if user is admin and redirect accordingly
+        sessionStorage.setItem('justLoggedIn', 'true');
         if (login.isAdmin(user)) {
             window.location.href = "admin.html";
         } else {

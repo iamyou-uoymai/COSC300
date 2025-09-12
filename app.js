@@ -22,6 +22,9 @@ console.log(app);
 const auth = getAuth(app);
 console.log(auth);
 
+// Make auth available globally for the email verification guard
+window.appAuth = auth;
+
 // Initialize Firestore
 const db = getFirestore(app);
 console.log('Firestore initialized:', db);
