@@ -7,11 +7,97 @@ import {auth, app, db} from "./app.js";
 class Register {
     constructor() {
         this.$submitRegistrationButton = document.querySelector("#submit-registration");
+         this.$registrationForm = document.querySelector("#registration-form");
 
-        this.addEventListeners();
+        // digit counter 
+         this.$digitCounter = document.getElementById('digit-counter');
+
+         // password visibility function call 
+         const passwordToggle = document.getElementById('password-toggle');
+         const retypePasswordToggle = document.getElementById('retype-password-toggle');
+         const passwordField = document.getElementById('register-password');
+         const retypePasswordField = document.getElementById('retype-password');
+
+         passwordToggle.addEventListener('click', () => {
+              this.togglePasswordVisibility(passwordField, passwordToggle);
+         });
+
+          retypePasswordToggle.addEventListener('click', () => {
+              this.togglePasswordVisibility(retypePasswordField, retypePasswordToggle);
+           });
+          
+          document.getElementById('phone-number').addEventListener('input', (e) => {
+            this.formatPhoneNumber(e);
+               });
+          
+              this.addEventListeners();
+            }
+           
+    updateDigitCounter(value) {
+        const digitCount = value.replace(/\D/g, '').length;
+        this.$digitCounter.textContent = `${digitCount}/9`;
+        
+       
+        if (digitCount === 9) {
+            this.$digitCounter.style.color = '#2ecc71'; 
+        } else {
+            this.$digitCounter.style.color = '#6c757d'; e
+        }
     }
+    // password visitility function 
 
+    togglePasswordVisibility(field , toggle){
+      if (field.type === 'password') {
+      field.type = 'text';
+      toggle.innerHTML = '<i class="far fa-eye-slash"></i>';
+      } else {
+      field.type = 'password';
+      toggle.innerHTML = '<i class="far fa-eye"></i>';
+       }
+    }
+    // fomarting the phone number 
+     formatPhoneNumber(e) {
+             //allow only numbers inputed
+         let value = e.target.value.replace(/\D/g, '');
+
+         // range restriction for digit size to be entered 
+         if (value.length > 9 ) {
+           value =value.substring(0, 9);
+             }
+         
+             this.updateDigitCounter(value);
+             let formattedValue = value;
+         if(value.length > 6 ) {
+             formattedValue = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
+           } else if(value.length > 3 ) {
+            formattedValue = value.substring(0, 3) + ' ' + value.substring(3);
+           }
+         e.target.value = formattedValue ; 
+      }  
+      
     addEventListeners() {
+
+      document.querySelector('#register-name').addEventListener("blur", (e) => {
+         this.validateName(e.target.value);
+      });
+
+      document.querySelector('#register-email').addEventListener("blur", (e) => {
+         this.validateEmail(e.target.value);
+      });
+        
+      document.querySelector("#phone-number").addEventListener("blur", (e) => {
+         this.validatePhoneNumber(e.target.value);
+      });
+
+      document.querySelector("#register-password").addEventListener("blur", (e) => {
+         this.validatePassword(e.target.value);
+         this.validatePasswordMatch();
+      });
+
+      document.querySelector('#retype-password').addEventListener("blur", (e) => {
+        this.validatePasswordMatch();
+      });
+
         this.$submitRegistrationButton.addEventListener("click", async (event) => {
             event.preventDefault();
 
@@ -31,7 +117,7 @@ class Register {
             // Phone number validation
             const phonePattern = /^(07|08|06)\d{8}$/;
             if (!phonePattern.test(this.$PhoneNumber)) {
-                alert("Invalid phone number. It must be 10 digits and start with 07, 08, or 06.");
+                alert("Phone number must be 10 digits and start with 07, 08, or 06.");
                 return;
             }
 
@@ -60,16 +146,17 @@ class Register {
 
             try {
                 // Create the user with email and password
-                const userCredential = await createUserWithEmailAndPassword(auth, this.$RegisterEmail, this.$RegisterPassword);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
                 // Update the user's profile with their name
-                await updateProfile(user, { displayName: this.$RegisterName });
+                await updateProfile(user, { displayName: name });
 
                 // Save user data to Firestore
                 await setDoc(doc(db, 'users', user.uid), {
-                    displayName: this.$RegisterName,
-                    email: this.$RegisterEmail,
+                    displayName: name,
+                    email: email,
+                    phoneNumber: "+27" + phone,
                     emailVerified: false,
                     role: 'user',
                     createdAt: new Date(),
@@ -89,9 +176,8 @@ class Register {
                 console.error("Error during registration:", error);
                 alert(error.message || "An error occurred during registration.");
             }
-        });
-    }
-}
+        }
+     }
 
 let register = new Register();
 

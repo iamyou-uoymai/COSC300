@@ -57,15 +57,21 @@
         <p class="text-muted">Sign in to Access Museum Augmented Reality Experience</p>
        </div>
 
-        <form>
-              
-              <div id="loading-spinner" class="d-none text-center py-3">
+        <form id="login-form">
+          <!-- loading spinner feature during authetication process -->
+         <div class="spinner-overlay" id="spinner-overlay" aria-hidden="true" aria-label="Loading">
+             <div class="spinner-container">
+              <div class="custom-spinner" role="status"></div>
+               <h5 class="text-white">Signing In...</h5>
+               <p class="text-muted">Please Wait While Verify Your Account </p>
 
-                <div class="spinner-border text-light " role="status">
-                   <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Signing in....</p>
-              </div>
+               <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+               </div>
+             </div>
+         </div>
+              
+              
         <label for="email" class="form-label">Email</label> 
         <input type="email" class="form-control" id="login-email" placeholder="xxx@gmail.com">
 
@@ -86,7 +92,12 @@
                     </div>
                       <a class="text-light" href="./reset.html">Forgot Password?</a>
               </div>
-        <button id="submit-login" type="submit" class="btn btn-light login-in-btn my-3">Login</button>
+        <button id="submit-login" type="submit" class="btn btn-light login-in-btn my-3 btn-loading">
+              <span class="btn-text">Login</span> 
+              <span class="btn-loader d-none">
+                <span class="spinner-border spinner-border-sm " role="status"></span>Signing In...
+              </span>
+            </button>
         
         <button id="google-signin" type="button" class="btn btn-danger w-100 mb-2">Sign in with Google</button>
               
@@ -106,4 +117,4 @@
           sessionStorage.setItem('visited','true');
       </script>
 </body>
-</html>
+</html> 

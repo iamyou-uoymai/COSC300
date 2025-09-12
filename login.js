@@ -3,21 +3,44 @@ import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendEm
 
 class Login {
     constructor() {
+
         this.$submitLogin = document.querySelector("#submit-login");
+        this.$loginForm = document.querySelector("#login-form");
+        this.$spinnerOverlay = document.querySelector("#spinner-overlay");
+
         this.addEventListeners();
         this.setupPasswordToggle();
+        this.checkRememberMeStatus();
     }
 
     addEventListeners() {
-        this.$submitLogin.addEventListener("click", async (event) => {
+        this.$loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
-            this.showLoading();
+            await this.handleLogin();
+        });
+            //add google sign in listener
+            const googleBtn = document.getElementById('google-signin');
+            if(googleBtn){
+                googleBtn.addEventListener('click', () => {
+                    this.handleGoogleSignIn();
+                });
+            }
+        }
+
+        async handleLogin() {
+               this.showLoading();
 
             const email = document.querySelector("#login-email").value;
             const password = document.querySelector("#login-password").value;
 
-            if (!email || !password) {
-                alert("Please fill in all fields.");
+            // validate email format 
+            if (!this.isValidEmail(email)){
+                this.showErrorMessage("Please enter a valid email address.", "email");
+                this.hideLoading();
+                return;
+            }
+            if ( !password) {
+                this.showErrorMessage("Please Enter your password.", "password");
                 this.hideLoading();
                 return;
             }
@@ -25,7 +48,14 @@ class Login {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                
+                //store the email in the local storage when the remember me if checked 
+                if (document.getElementById('rememberMe').checked){
+                    localStorage.setItem('rememberedEmail', email);
+                }else{ 
+                    localStorage.removeItem('rememberedEmail');
+                }
+
+                this.saveRememberMePreference();
                 // Check if email is verified
                 if (!user.emailVerified) {
                     this.hideLoading();
@@ -40,33 +70,100 @@ class Login {
                 } else {
                     window.location.href = "index.html";
                 }
+                // verify if all the field are filled with the correct format and return feedback is error encountered 
             } catch (error) {
-              this.showErrorMessage(error.message);
+                const friendlyMessage = this.getFriendlyErrorMessage(error.code);
+              this.showErrorMessage(friendlyMessage);
                this.hideLoading();
             }
-        });
-    }
-       ///method to display error message
-      showErrorMessage(message){
-           this.removeExistingMessages();
+        }
+        async handleGoogleSignIn(){
+            this.showLoading();
+            const provider = new GoogleAuthProvider();
 
-           const errorDiv = document.createElement('div');
-           errorDiv.className = 'alert alert-danger mt-3';
-           errorDiv.setAttribute('role','alert');
-           errorDiv.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i> ${message} ';
-         
-           const form= document.querySelector('form');
-           form.parentNode.insertBefore(errorDiv, form.nextSibling);
+            try {
 
-        setTimeout(() => {
-              if (errorDiv.parentNode){
-                errorDiv.parentNode.removeChild(errorDiv);
-              }
-        }, 3000);
-      }
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
 
-      removeExistingMessages() {
-         const existingErrors =document.querySelectorAll('alert-danger');
+            if (!user.emailVerified){
+                this.hideLoading();
+                this.showEmailVerificationModal(user);
+                return;
+            }
+            if(this.isAdmin(user)){
+                window.location.href ="admin.html";
+            } else {
+                window.location.href ="index.html";
+            }
+            } catch (error) {
+            console.error('Google sign-in error:', error);
+            const friendlyMessage = this.getFriendlyErrorMessage(error.code);
+            this.showErrorMessage(friendlyMessage || 'Google sign-in failed.');
+            this.hideLoading();
+            }
+        }
+    
+         // function for error handling 
+         getFriendlyErrorMessage(errorCode){
+             switch (errorCode) {
+                case 'auth/invalid-email':
+                    return 'The Email address is not properly formatted.';
+
+                case 'auth/user-disabled':
+                    return 'This user account has been disabled';
+
+                case 'auth/user-not-found':
+                    return 'No account found with this email address';
+
+                case 'auth/wrong-password':
+                    return 'Incorrect Password. Please try again...';
+
+                case 'auth/too-many-requests':
+                    return 'Too many failed attempts.Please try again later.';
+                
+                case 'auth/popup-closed-by-user':
+                    return 'Sign-in was Cancelled.';
+                default:
+                    return 'An error occurred when Login . Please verify ur credential and try again .';
+             }
+
+         }
+          // Email validation
+          isValidEmail(email){
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+          }
+       // function for error display message 
+         showErrorMessage(message,field = null){
+            this.removeExistingMessages();
+
+            if (field === 'email'){
+                document.getElementById('login-email').classList.add('is-invalid');
+            }else if(field === 'password') {
+                document.getElementById('login-password').classList.add('is-invalid');
+            }
+
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger mt-3';
+            errorDiv.setAttribute('role', 'alert');
+            errorDiv.innerHTML =   `<i class="fas fa-exclamation-circle me-2"></i> ${message} `;
+
+            const form = document.querySelector('form');
+            form.parentNode.insertBefore(errorDiv, form.nextSibling);
+
+            setTimeout(() => {
+                if(errorDiv.parentNode){
+                    errorDiv.parentNode.removeChild(errorDiv);
+                }
+
+            document.getElementById('login-email').classList.remove('is-invalid');
+            document.getElementById('login-password').classList.remove('is-invalid');
+            },5000);
+         }
+
+        removeExistingMessages() {
+         const existingErrors =document.querySelectorAll('.alert-danger');
           existingErrors.forEach(error => error.remove());
       }
          
@@ -81,36 +178,42 @@ class Login {
                         passwordInput.type = 'text';
                         passwordToggle.innerHTML = '<i class="far fa-eye-slash"></i>';
                         passwordToggle.setAttribute( 'aria-label', 'Hide password');
+                        passwordToggle.classList.add('active');
                    }else {
                        
                         passwordInput.type = 'password';
                         passwordToggle.innerHTML = '<i class="far fa-eye"></i>';
                         passwordToggle.setAttribute('aria-label', 'Show password');
+                        passwordToggle.classList.remove('active');
                    }
                    
                });
        }
     }
+         // loading spinner function 
+      showLoading(){
+            this.$submitLogin.classList.add('loading');
+            this.$submitLogin.disabled = true; 
 
-    showLoading(){
-          const spinner = document.getElementById('loading-spinner');
-          const loginBtn = document.getElementById('submit-login');
-           const googleBtn = document.getElementById('google-signin');
-      
-           if (spinner) spinner.classList.remove('d-none');
-                if (loginBtn) loginBtn.disabled = true;
-                 if (googleBtn) googleBtn.disabled = true;
+            if(this.$spinnerOverlay) this.$spinnerOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+              // disable other interactive features during loading
+              const googleBtn = document.getElementById('google-signin');
+              if (googleBtn) googleBtn.disabled = true;
                }
 
            hideLoading() {
-      const spinner = document.getElementById('loading-spinner');
-      const loginBtn = document.getElementById('submit-login');
-      const googleBtn = document.getElementById('google-signin');
-      
-      if (spinner) spinner.classList.add('d-none');
-      if (loginBtn) loginBtn.disabled = false;
-      if (googleBtn) googleBtn.disabled = false;
-    }
+            this.$submitLogin.classList.remove('loading');
+            this.$submitLogin.disabled = false;
+
+            if (this.$spinnerOverlay) this.$spinnerOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+
+             // Enable the operation of other button fixed 
+              const googleBtn = document.getElementById('google-signin');
+              if (googleBtn) googleBtn.disabled = false;
+            }
+
 
     // Check if user is admin
     isAdmin(user) {
@@ -132,12 +235,12 @@ class Login {
         const modalHTML = `
             <div class="modal fade" id="emailVerificationModal" tabindex="-1" aria-labelledby="emailVerificationModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
+                    <div class="modal-content bg-dark text-light">
+                        <div class="modal-header border-secondary">
                             <h5 class="modal-title" id="emailVerificationModalLabel">
                                 <i class="fas fa-envelope-open-text me-2"></i>Email Verification Required
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="text-center mb-3">
@@ -179,7 +282,7 @@ class Login {
         // Add resend verification button functionality
         document.getElementById('resendVerificationBtn').addEventListener('click', async () => {
             try {
-                await user.sendEmailVerification({
+                await user.sendEmailVerification(user, {
                     url: window.location.origin + '/index.html',
                     handleCodeInApp: true
                 });
@@ -206,12 +309,33 @@ class Login {
             if (successDiv.parentNode) {
                 successDiv.parentNode.removeChild(successDiv);
             }
-        }, 3000);
+        }, 5000);
+    }
+
+    saveRememberMePreference(){
+        const rememberMe = document.getElementById('rememberMe').checked;
+        if (rememberMe) {
+            localStorage.setItem('rememberMe', 'true');
+        }else {
+            localStorage.removeItem('rememberMe');
+        }
+    }
+
+        checkRememberMeStatus () {
+        const rememberMe = localStorage.getItem('rememberMe');
+        if(rememberMe === 'true') {
+            document.getElementById('rememberMe').checked = true; 
+
+            const storedEmail = localStorage.getItem('rememberedEmail');
+            if (storedEmail) {
+                document.getElementById('login-email').value = storedEmail;
+            }
+        }
     }
 }
 
-let login = new Login();
-// Google sign-in logic
+
+// Initialize the login functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   const googleBtn = document.getElementById('google-signin');
   if (googleBtn) {
@@ -230,7 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Check if user is admin and redirect accordingly
-        sessionStorage.setItem('justLoggedIn', 'true');
         if (login.isAdmin(user)) {
             window.location.href = "admin.html";
         } else {
